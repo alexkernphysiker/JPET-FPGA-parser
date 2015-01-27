@@ -26,6 +26,7 @@ data.sorting.*
 .plotscript.gp
 *.png
 *.autosave
+*_app*
 
 # Compiled Object files
 *.slo
