@@ -51,24 +51,24 @@ file source : text is in "test_data";
 variable L : line;
 variable N : STD_LOGIC_VECTOR (7 downto 0);
 variable goodnumber: boolean;
-variable counter: integer;
+variable counter: integer:=0;
 begin
 if rising_edge(clock)then
 	if not endfile(source)then
-		--counter:=counter+1;
+		counter:=counter+1;
 		hread(L,N,goodnumber);
 		if not goodnumber then
 			readline(source,L);
 			hread(L,N,goodnumber);
-			--counter:=0;
+			counter:=0;
 			data_valid<='0';
 		else
-			--if(counter>1)then
+			if(counter>1)then
 				data_valid<='1';
 				data_out<=N;
-			--else
-			--	data_valid<='0';
-			--end if;
+			else
+				data_valid<='0';
+			end if;
 		end if;
 	else
 		data_valid<='0';
