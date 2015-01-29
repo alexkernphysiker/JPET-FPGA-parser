@@ -10,8 +10,9 @@ int main(int arg_cnt,char**arg){
 		output.open(QIODevice::WriteOnly);
 		if(output.isOpen()){
 				QTextStream out(&output);
-				DumpWrapper wrap(&out);
-				for(uchar i=0; i<255; i++)wrap<<i;
+                DumpWrapper wrap(&out);
+                wrap|2;
+                for(uint i=0; i<512; i++)wrap<<i;
 				output.close();
 				printf("done.\n");
 		}else {
