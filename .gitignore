@@ -28,6 +28,12 @@ data.sorting.*
 *.autosave
 *_app*
 
+#kdevelop
+*swp
+*~
+~*
+*.kdev*
+
 # Compiled Object files
 *.slo
 *.lo
