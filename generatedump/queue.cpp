@@ -1,13 +1,17 @@
 #include "queue.h"
 AbstractDataStructure::~AbstractDataStructure(){}
-DumpWrapper &operator <<(DumpWrapper &output, AbstractDataStructure &data){
-	data.outputData(output);
+DumpWrapper &operator <<(DumpWrapper &output, std::shared_ptr<AbstractDataStructure> data){
+	data->outputData(output);
 	return output;
 }
 DataContainer::DataContainer():m_data(){}
 DataContainer::~DataContainer(){}
 DataContainer &DataContainer::operator<<(std::shared_ptr<AbstractDataStructure> item){
 	m_data.push_back(item);
+}
+std::shared_ptr<DataContainer> operator<<(std::shared_ptr<DataContainer> output,std::shared_ptr<AbstractDataStructure> item){
+	output->operator<<(item);
+	return output;
 }
 unsigned int DataContainer::SubItemCount(){
 	return m_data.size();
@@ -44,6 +48,7 @@ numtype FieldSet::size(){
 FieldSet& FieldSet::AddField(unsigned char sz, numtype value){
 	if(0==sz)throw;
 	fields.push_back(std::make_pair(sz,value));
+	return *this;
 }
 void FieldSet::outputData(DumpWrapper& output){
 	int index=0;
@@ -87,6 +92,10 @@ DataItem::~DataItem(){}
 DataItem& DataItem::operator<<(numtype word){
 	AddField(WordLength,word);
 	count++;
+}
+std::shared_ptr< DataItem > operator<<(std::shared_ptr< DataItem > output, numtype word){
+	*output << word;
+	return output;
 }
 numtype DataItem::size(){
     return FieldSet::size()+DataItemCountSize;

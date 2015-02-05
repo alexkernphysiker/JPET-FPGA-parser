@@ -10,7 +10,7 @@ public:
 	virtual numtype size()=0;
 	virtual void outputData(DumpWrapper &output)=0;
 };
-DumpWrapper &operator <<(DumpWrapper &output, AbstractDataStructure &data);
+DumpWrapper &operator <<(DumpWrapper &output, std::shared_ptr<AbstractDataStructure> data);
 class DataContainer:public virtual AbstractDataStructure{
 public:
 	DataContainer();
@@ -22,6 +22,7 @@ public:
 private:
 	std::list<std::shared_ptr<AbstractDataStructure>> m_data;
 };
+std::shared_ptr<DataContainer> operator<<(std::shared_ptr<DataContainer> output,std::shared_ptr<AbstractDataStructure> item);
 class FieldSet:public virtual AbstractDataStructure{
 public:
 	FieldSet();
@@ -50,7 +51,7 @@ public:
     virtual void outputData(DumpWrapper &output)override;
 };
 const unsigned char DataItemCountSize=2;
-class DataItem:protected virtual FieldSet{
+class DataItem:public virtual FieldSet{
 public:
     DataItem(numtype deviceID);
     virtual ~DataItem();
@@ -60,4 +61,5 @@ public:
 private:
 	numtype count;
 };
+std::shared_ptr<DataItem> operator<<(std::shared_ptr<DataItem> output,numtype word);
 #endif //__QUEUE_H__
