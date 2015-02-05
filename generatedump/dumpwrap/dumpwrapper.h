@@ -1,6 +1,7 @@
 #ifndef DUMPWRAPPER_H
 #define DUMPWRAPPER_H
 #include <fstream>
+#include <utility>
 
 typedef unsigned long numtype;//only unsigned types are supported
 const unsigned char maxtablesize=sizeof(numtype);
@@ -14,6 +15,7 @@ public:
 	DumpWrapper &operator |(unsigned char number_size);
 	//Sends an unsigned number to be wrapped into the stream (the size should be set before)
 	DumpWrapper &operator <<(numtype value);
+	DumpWrapper &operator <<(std::pair<unsigned char,numtype> field);
 protected:
 	virtual DumpWrapper &write(unsigned char value);
 private:

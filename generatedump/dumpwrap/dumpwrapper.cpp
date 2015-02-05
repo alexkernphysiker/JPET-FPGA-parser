@@ -42,3 +42,8 @@ DumpWrapper &DumpWrapper::operator <<(numtype value){
 	};
 	return *this;
 }
+DumpWrapper &DumpWrapper::operator <<(std::pair<unsigned char,numtype> field){
+	unsigned char tmp=nsize;
+	*this|field.first<<field.second|tmp;
+}
+
