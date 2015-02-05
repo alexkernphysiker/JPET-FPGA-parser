@@ -44,6 +44,6 @@ DumpWrapper &DumpWrapper::operator <<(numtype value){
 }
 DumpWrapper &DumpWrapper::operator <<(std::pair<unsigned char,numtype> field){
 	unsigned char tmp=nsize;
-	*this|field.first<<field.second|tmp;
+	operator|(field.first)<<field.second|tmp;
 }
 

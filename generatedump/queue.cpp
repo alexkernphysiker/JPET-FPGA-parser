@@ -4,23 +4,27 @@ DumpWrapper &operator <<(DumpWrapper &output, AbstractDataStructure &data){
 	data.outputData(output);
 	return output;
 }
-AbstractDataContainer::~AbstractDataContainer(){}
-AbstractDataContainer &AbstractDataContainer::AddData(std::shared_ptr<AbstractDataStructure> item){
+DataContainer::DataContainer():m_data(){}
+DataContainer::~DataContainer(){}
+DataContainer &DataContainer::operator<<(std::shared_ptr<AbstractDataStructure> item){
 	m_data.push_back(item);
 }
-void AbstractDataContainer::outputData(DumpWrapper &output){
+unsigned int DataContainer::SubItemCount(){
+	return m_data.size();
+}
+void DataContainer::outputData(DumpWrapper &output){
 	for(auto item: m_data){
 		item->outputData(output);
 	}
 }
-numtype AbstractDataContainer::size(){
+numtype DataContainer::size(){
 	numtype res=0;
 	for(auto item: m_data){
 		res+=item->size();
 	}
 	return res;
 }
-FieldSet::FieldSet(){
+FieldSet::FieldSet():fields(){
 	sizepos=-1;
 	sizesize=0;
 }
@@ -50,6 +54,44 @@ void FieldSet::outputData(DumpWrapper& output){
 	}
 	if(sizepos==index)output<<std::make_pair(sizesize,size());
 }
-
-
-
+Queue::Queue():FieldSet(),DataContainer(){
+	setSizePositionAndSize(0,WordLength);
+	AddField(WordLength,0);//actually is ignored
+}
+Queue::~Queue(){}
+numtype Queue::size(){
+    return FieldSet::size()+DataContainer::size();
+}
+void Queue::outputData(DumpWrapper& output){
+    FieldSet::outputData(output);
+    DataContainer::outputData(output);
+}
+SubQueue::SubQueue(numtype EventID, numtype TriggerNumber):FieldSet(),DataContainer(){
+	setSizePositionAndSize(0,WordLength);
+	AddField(WordLength,0);//actually is ignored
+	AddField(WordLength,EventID).AddField(WordLength,TriggerNumber);
+}
+SubQueue::~SubQueue(){}
+numtype SubQueue::size(){
+    return FieldSet::size()+DataContainer::size();
+}
+void SubQueue::outputData(DumpWrapper& output){
+    FieldSet::outputData(output);
+    DataContainer::outputData(output);
+}
+DataItem::DataItem(numtype deviceID):FieldSet(){
+	AddField(WordLength-DataItemCountSize,deviceID);
+	count=0;
+}
+DataItem::~DataItem(){}
+DataItem& DataItem::operator<<(numtype word){
+	AddField(WordLength,word);
+	count++;
+}
+numtype DataItem::size(){
+    return FieldSet::size()+DataItemCountSize;
+}
+void DataItem::outputData(DumpWrapper& output){
+	output<<std::make_pair(DataItemCountSize,count);
+	FieldSet::outputData(output);
+}
