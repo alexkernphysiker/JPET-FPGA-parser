@@ -52,8 +52,6 @@ BEGIN
    begin		
       wait for 100 ns;	
 
-      wait for clock_period*50;
-
       wait;
    end process;
 
