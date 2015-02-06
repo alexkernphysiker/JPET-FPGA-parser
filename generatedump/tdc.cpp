@@ -1,10 +1,8 @@
 #include "tdc.h"
 #include <math.h>
-#include "../math_h/bit_opr.h"
 using namespace std;
-using namespace BitOperations;
 namespace DumpGenerate {
-//#include "bit_opr.cc"//define bit operations
+	#include "../math_h/bit_opr.cc"//define bit operations
 numtype TDCHeader(bool error) {
     numtype errorcode=0;
 	numtype somecode=0x77;//it's ignored
