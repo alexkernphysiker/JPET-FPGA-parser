@@ -5,7 +5,6 @@
 #include <utility>
 #include "dumpwrap/dumpwrapper.h"
 namespace DumpGenerate {
-typedef std::list<numtype> numlist;
 class AbstractDataStructure {
 public:
     virtual ~AbstractDataStructure();
@@ -35,7 +34,7 @@ public:
     FieldSet &setSizePositionAndSize(int pos, unsigned char sz);
     FieldSet &AddField(unsigned char sz, numtype value);
 private:
-    std::list<std::pair<unsigned char,numtype>> fields;
+    std::list<numwithsize> fields;
     int sizepos;
     unsigned char sizesize;
 };

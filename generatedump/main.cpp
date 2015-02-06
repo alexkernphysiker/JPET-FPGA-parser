@@ -12,7 +12,7 @@ int main(int arg_cnt,char**arg) {
     ofstream output;
     output.open(arg[1]);
     if(output.is_open()) {
-        DumpWrapper wrap(&output,BigEndian);
+        DumpWrapperToText wrap(&output,BigEndian);
         wrap<<(make_shared<Queue>()<<(
                    make_shared<SubQueue>(0x1d1d,0xd1d1)<<
                    (make_shared<DataItem>(0xffff)<<1<<2<<3)<<

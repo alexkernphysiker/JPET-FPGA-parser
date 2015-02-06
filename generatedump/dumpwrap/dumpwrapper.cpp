@@ -2,26 +2,11 @@
 #include <iomanip>
 using namespace std;
 namespace DumpGenerate {
-DumpWrapper::DumpWrapper(ofstream *output, Endian endian, unsigned char items_per_column, unsigned char columns_number) {
-    out=output;
-    per_column=items_per_column;
-    colunms=columns_number;
-    cnt=0;
+DumpWrapper::DumpWrapper(Endian endian) {
     m_endian=endian;
     nsize=1;
 }
 DumpWrapper::~DumpWrapper() {}
-DumpWrapper &DumpWrapper::write(unsigned char value) {
-    ios state(nullptr);
-    if(0==cnt%(per_column*colunms)) {
-        if(cnt>0)*out<<"\n";
-        *out<<hex<<uppercase<<setw(8)<<setfill('0')<<cnt;
-    }
-    if(0==cnt%(per_column))*out<<" ";
-    *out<<" "<<hex<<uppercase<<setw(2)<<setfill('0')<<int(value);
-    cnt++;
-    return *this;
-}
 DumpWrapper &DumpWrapper::operator |(unsigned char number_size) {
     if(0==number_size) throw;
     if(number_size>maxtablesize)throw;
@@ -46,8 +31,32 @@ DumpWrapper &DumpWrapper::operator <<(numtype value) {
     };
     return *this;
 }
-DumpWrapper &DumpWrapper::operator <<(std::pair<unsigned char,numtype> field) {
+DumpWrapper& DumpWrapper::operator<<(numlist values) {
+    for(numtype v:values)*this<<v;
+    return *this;
+}
+
+DumpWrapper &DumpWrapper::operator <<(numwithsize field) {
     unsigned char tmp=nsize;
     operator|(field.first)<<field.second|tmp;
+    return *this;
+}
+DumpWrapperToText::DumpWrapperToText(ofstream* output, Endian endian, unsigned char items_per_column, unsigned char columns_number): DumpWrapper(endian) {
+    out=output;
+    per_column=items_per_column;
+    colunms=columns_number;
+    cnt=0;
+}
+DumpWrapperToText::~DumpWrapperToText() {}
+DumpWrapper& DumpWrapperToText::write(unsigned char value) {
+    ios state(nullptr);
+    if(0==cnt%(per_column*colunms)) {
+        if(cnt>0)*out<<"\n";
+        *out<<hex<<uppercase<<setw(8)<<setfill('0')<<cnt;
+    }
+    if(0==cnt%(per_column))*out<<" ";
+    *out<<" "<<hex<<uppercase<<setw(2)<<setfill('0')<<int(value);
+    cnt++;
+    return *this;
 }
 };
