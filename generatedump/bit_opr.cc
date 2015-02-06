@@ -9,8 +9,7 @@ template<int b>
 struct bits<b,b>{enum{set=bit<b>::set,unset = !set};};
 template<int a, int b>
 numtype occupy_bits(numtype small_value){
-	numtype moved=small_value<<b;
-	numtype cut=moved&bits<a,b>::set;
-	if(cut!=moved)throw;
-	return cut;
+	numtype cut=small_value&bits<a-b,0>::set;
+	if(small_value!=cut)throw;
+	return cut<<b;
 }
