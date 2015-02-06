@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "queue.h"
+#include "tdc.h"
 using namespace std;
 using namespace DumpGenerate;
 int main(int arg_cnt,char**arg) {
@@ -18,7 +19,7 @@ int main(int arg_cnt,char**arg) {
                    (make_shared<DataItem>(0xffff)<<8)
                )<<(
                    make_shared<SubQueue>(0x1d1d,0xd1d1)<<
-                   (make_shared<DataItem>(0x7777))
+                   (make_shared<DataItem>(0x7777)<<make_shared<TDCHeader>())
                ));
         output.close();
         printf("File saved.\n");

@@ -101,10 +101,11 @@ DataItem& DataItem::operator<<(numtype word) {
     return *this;
 }
 DataItem& DataItem::operator<<(DataSubItem *item) {
-    return operator<<(item->out());
+	for(auto i:item->out())*this<<i;
+	return *this;
 }
 DataItem& DataItem::operator<<(shared_ptr< DataSubItem > item) {
-    return operator<<(item->out());
+    return operator<<(item.get());
 }
 
 numtype DataItem::size() {
