@@ -114,4 +114,5 @@ void DataItem::outputData(DumpWrapper& output) {
     output<<make_pair(DataItemCountSize,count);
     FieldSet::outputData(output);
 }
+DataSubItem::~DataSubItem(){}
 };

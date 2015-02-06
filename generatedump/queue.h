@@ -56,6 +56,7 @@ public:
 const unsigned char DataItemCountSize=2;
 class DataSubItem {
 public:
+	virtual ~DataSubItem();
     virtual numtype out()=0;
 };
 class DataItem:public virtual FieldSet {
