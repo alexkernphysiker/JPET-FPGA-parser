@@ -7,12 +7,13 @@ TDCHeader::TDCHeader(bool error){
 		errorcode=0xffff&rand();
 	else
 		errorcode=0;
-	randomcode=0x1ff&rand();
+	randomcode=0x1ff0000&rand();
 }
 TDCHeader::~TDCHeader(){}
+const numtype tdc_header_signature=0x20000000;
 list<numtype> TDCHeader::out(){
 	list<numtype> res;
-	res.push_back(errorcode|((randomcode|(0x1<<(8+5)))<<16));
+	res.push_back(errorcode|randomcode|tdc_header_signature);
 	return res;
 }
 
