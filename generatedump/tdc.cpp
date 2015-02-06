@@ -3,17 +3,18 @@
 using namespace std;
 namespace DumpGenerate {
 #include "bit_opr.cc"//define bit operations
-TDCHeader::TDCHeader(bool error) {
+numtype TDCHeader(bool error) {
+    numtype errorcode=0;
+	numtype somecode=0x77;//it's ignored
     if(error)
-        m_error=(rand()&bits<15,0>::set);
-    else
-        m_error=0;
+        errorcode=rand();
+	return occupy_bits<15,0>(errorcode)|occupy_bits<23,16>(somecode)|(0b001<<29);
 }
-TDCHeader::~TDCHeader() {}
-const numtype tdc_header_signature=0x20000000;
-numlist TDCHeader::out() {
-    numlist res;
-    res.push_back(m_error|(rand()&bits<24,16>::set)|bit<29>::set);
-    return res;
+numpair TDCTime(numtype channel, numtype epoch, numtype coasser, numtype finetime,bool rizingedge){
+	numtype rize=0;
+	if(rizingedge)rize=bit<11>::set;
+	return make_pair((0b011<<29)|occupy_bits<27,0>(epoch),
+					 (0b1<<31)|occupy_bits<28,22>(channel)|occupy_bits<21,12>(finetime)|rize|occupy_bits<10,0>(coasser)
+				);
 }
 }

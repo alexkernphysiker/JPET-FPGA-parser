@@ -38,7 +38,7 @@ DumpWrapper& DumpWrapper::operator<<(numlist values) {
 
 DumpWrapper &DumpWrapper::operator <<(numwithsize field) {
     unsigned char tmp=nsize;
-    operator|(field.first)<<field.second|tmp;
+    operator|(field.second)<<field.first|tmp;
     return *this;
 }
 DumpWrapperToText::DumpWrapperToText(ofstream* output, Endian endian, unsigned char items_per_column, unsigned char columns_number): DumpWrapper(endian) {

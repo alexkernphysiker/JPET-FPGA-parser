@@ -51,23 +51,23 @@ numtype FieldSet::size() {
     if(sizepos>=0)res+=sizesize;
     return res;
 }
-FieldSet& FieldSet::AddField(unsigned char sz, numtype value) {
+FieldSet& FieldSet::AddField(numtype value,unsigned char sz) {
     if(0==sz)throw;
-    fields.push_back(make_pair(sz,value));
+    fields.push_back(make_pair(value,sz));
     return *this;
 }
 void FieldSet::outputData(DumpWrapper& output) {
     int index=0;
     for(auto field:fields) {
-        if(sizepos==index)output<<make_pair(sizesize,size());
+		if(sizepos==index)output<<make_pair(size(),sizesize);
         output<<field;
         index++;
     }
-    if(sizepos==index)output<<make_pair(sizesize,size());
+    if(sizepos==index)output<<make_pair(size(),sizesize);
 }
 Queue::Queue():FieldSet(),DataContainer() {
-    setSizePositionAndSize(0,WordLength);
-    AddField(WordLength,0);//actually is ignored
+    setSizePositionAndSize(0);
+    AddField(0);//this is another field!!! actually it is ignored
 }
 Queue::~Queue() {}
 numtype Queue::size() {
@@ -78,9 +78,9 @@ void Queue::outputData(DumpWrapper& output) {
     DataContainer::outputData(output);
 }
 SubQueue::SubQueue(numtype EventID, numtype TriggerNumber):FieldSet(),DataContainer() {
-    setSizePositionAndSize(0,WordLength);
-    AddField(WordLength,0);//actually is ignored
-    AddField(WordLength,EventID).AddField(WordLength,TriggerNumber);
+    setSizePositionAndSize(0);
+	AddField(0);//actually is ignored
+	AddField(EventID).AddField(TriggerNumber);
 }
 SubQueue::~SubQueue() {}
 numtype SubQueue::size() {
@@ -91,29 +91,28 @@ void SubQueue::outputData(DumpWrapper& output) {
     DataContainer::outputData(output);
 }
 DataItem::DataItem(numtype deviceID):FieldSet() {
-    AddField(WordLength-DataItemCountSize,deviceID);
+	AddField(deviceID,WordLength-DataItemCountSize);
     count=0;
 }
 DataItem::~DataItem() {}
 DataItem& DataItem::operator<<(numtype word) {
-    AddField(WordLength,word);
+    AddField(word);
     count++;
     return *this;
 }
-DataItem& DataItem::operator<<(DataSubItem *item) {
-	for(auto i:item->out())*this<<i;
+DataItem& DataItem::operator<<(numpair words){
+	*this<<words.first;
+	return *this<<words.second;
+}
+DataItem& DataItem::operator<<(numlist words){
+	for(auto word:words)*this<<word;
 	return *this;
 }
-DataItem& DataItem::operator<<(shared_ptr< DataSubItem > item) {
-    return operator<<(item.get());
-}
-
 numtype DataItem::size() {
     return FieldSet::size()+DataItemCountSize;
 }
 void DataItem::outputData(DumpWrapper& output) {
-    output<<make_pair(DataItemCountSize,count);
+	output<<make_pair(count,DataItemCountSize);
     FieldSet::outputData(output);
 }
-DataSubItem::~DataSubItem(){}
 };

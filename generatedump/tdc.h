@@ -1,14 +1,8 @@
 #ifndef ____TDC____
 #define ____TDC____
 #include "queue.h"
-namespace DumpGenerate{
-	class TDCHeader:public virtual DataSubItem{
-	public:
-		TDCHeader(bool error=false);
-		virtual ~TDCHeader();
-		virtual numlist out()override;
-	private:
-		numtype m_error;
-	};
+namespace DumpGenerate {
+numtype TDCHeader(bool error=false);
+numpair TDCTime(numtype channel, numtype epoch, numtype coasser, numtype finetime,bool rizingedge);
 };
 #endif //____TDC____

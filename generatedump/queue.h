@@ -25,20 +25,20 @@ public:
 private:
     std::list<std::shared_ptr<AbstractDataStructure>> m_data;
 };
+const unsigned char WordLength=4;
 class FieldSet:public virtual AbstractDataStructure {
 public:
     FieldSet();
     virtual ~FieldSet();
     virtual numtype size()override;
     virtual void outputData(DumpWrapper &output)override;
-    FieldSet &setSizePositionAndSize(int pos, unsigned char sz);
-    FieldSet &AddField(unsigned char sz, numtype value);
+    FieldSet &setSizePositionAndSize(int pos, unsigned char sz=WordLength);
+    FieldSet &AddField(numtype value,unsigned char sz=WordLength);
 private:
     std::list<numwithsize> fields;
     int sizepos;
     unsigned char sizesize;
 };
-const unsigned char WordLength=4;
 class Queue:protected virtual FieldSet, public virtual DataContainer {
 public:
     Queue();
@@ -54,11 +54,6 @@ public:
     virtual void outputData(DumpWrapper &output)override;
 };
 const unsigned char DataItemCountSize=2;
-class DataSubItem {
-public:
-	virtual ~DataSubItem();
-	virtual numlist out()=0;
-};
 class DataItem:public virtual FieldSet {
 public:
     DataItem(numtype deviceID);
@@ -66,8 +61,8 @@ public:
     virtual numtype size()override;
     virtual void outputData(DumpWrapper &output)override;
     DataItem &operator<<(numtype word);
-    DataItem &operator<<(DataSubItem *item);
-    DataItem &operator<<(std::shared_ptr<DataSubItem> item);
+    DataItem &operator<<(numlist words);
+    DataItem &operator<<(numpair words);
 private:
     numtype count;
 };

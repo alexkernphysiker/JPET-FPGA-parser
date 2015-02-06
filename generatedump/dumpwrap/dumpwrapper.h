@@ -6,7 +6,8 @@
 namespace DumpGenerate {
 typedef unsigned long numtype;//only unsigned types are supported
 typedef std::list<numtype> numlist;
-typedef std::pair<unsigned char,numtype> numwithsize;
+typedef std::pair<numtype,numtype> numpair;
+typedef std::pair<numtype,unsigned char> numwithsize;
 const unsigned char maxtablesize=sizeof(numtype);
 enum Endian {LittleEndian,BigEndian};
 class DumpWrapper {
