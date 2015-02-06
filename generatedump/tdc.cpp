@@ -4,16 +4,15 @@ using namespace std;
 namespace DumpGenerate {
 TDCHeader::TDCHeader(bool error){
 	if(error)
-		errorcode=0xffff&rand();
+		m_error=(rand()&bits<15,0>::set);
 	else
-		errorcode=0;
-	randomcode=0x1ff0000&rand();
+		m_error=0;
 }
 TDCHeader::~TDCHeader(){}
 const numtype tdc_header_signature=0x20000000;
-list<numtype> TDCHeader::out(){
-	list<numtype> res;
-	res.push_back(errorcode|randomcode|tdc_header_signature);
+numlist TDCHeader::out(){
+	numlist res;
+	res.push_back(m_error|(rand()&bits<24,16>::set)|bit<29>::set);
 	return res;
 }
 

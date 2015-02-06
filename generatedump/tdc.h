@@ -6,10 +6,9 @@ namespace DumpGenerate{
 	public:
 		TDCHeader(bool error=false);
 		virtual ~TDCHeader();
-		virtual std::list<numtype> out()override;
+		virtual numlist out()override;
 	private:
-		numtype randomcode;
-		numtype errorcode;
+		numtype m_error;
 	};
 };
 #endif //____TDC____

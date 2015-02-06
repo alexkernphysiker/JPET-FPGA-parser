@@ -5,6 +5,7 @@
 #include <utility>
 #include "dumpwrap/dumpwrapper.h"
 namespace DumpGenerate {
+typedef std::list<numtype> numlist;
 class AbstractDataStructure {
 public:
     virtual ~AbstractDataStructure();
@@ -57,7 +58,7 @@ const unsigned char DataItemCountSize=2;
 class DataSubItem {
 public:
 	virtual ~DataSubItem();
-    virtual std::list<numtype> out()=0;
+	virtual numlist out()=0;
 };
 class DataItem:public virtual FieldSet {
 public:
@@ -76,5 +77,12 @@ operator<<(std::shared_ptr<outputtype> output,datatype data) {
     *output << data;
     return output;
 }
+template<int b>
+struct bit{enum{set=numtype(1)<<b,unset = !set};};
+template<int a, int b>
+struct bits{enum{set=(numtype(1)<<a)|bits<a-1,b>::set,unset = !set};};
+template<int b>
+struct bits<b,b>{enum{set=bit<b>::set,unset = !set};};
+
 };
 #endif //__QUEUE_H__
