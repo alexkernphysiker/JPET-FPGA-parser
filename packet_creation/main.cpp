@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include "queue.h"
-#include "tdc.h"
+#include "generatedump/queue.h"
+#include "generatedump/tdc.h"
 using namespace std;
 using namespace DumpGenerate;
 int main(int arg_cnt,char**arg) {

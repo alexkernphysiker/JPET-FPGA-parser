@@ -2,7 +2,7 @@
 #include <math.h>
 using namespace std;
 namespace DumpGenerate {
-#include "../math_h/bit_opr.cc"//define bit operations
+#include "../../math_h/bit_opr.cc"//define bit operations
 numtype TDCHeader(bool error) {
     numtype errorcode=0;
     numtype somecode=0x77;//it's ignored

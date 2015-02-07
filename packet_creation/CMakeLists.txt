@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.6)
+project(savedump)
+set(CMAKE_CXX_FLAGS -std=gnu++11)
+add_subdirectory(generatedump)
+add_executable(savedump main.cpp)
+target_link_libraries(savedump generatedump dumpwrap)
