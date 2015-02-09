@@ -108,6 +108,10 @@ DataItem& DataItem::operator<<(numlist words){
 	for(auto word:words)*this<<word;
 	return *this;
 }
+DataItem& DataItem::operator<<(numvect words){
+	for(auto word:words)*this<<word;
+	return *this;
+}
 numtype DataItem::size() {
     return FieldSet::size()+DataItemCountSize;
 }

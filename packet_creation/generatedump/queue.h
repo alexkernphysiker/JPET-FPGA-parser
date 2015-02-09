@@ -61,8 +61,9 @@ public:
     virtual numtype size()override;
     virtual void outputData(DumpWrapper &output)override;
     DataItem &operator<<(numtype word);
-    DataItem &operator<<(numlist words);
-    DataItem &operator<<(numpair words);
+	DataItem &operator<<(numlist words);
+	DataItem &operator<<(numvect words);
+	DataItem &operator<<(numpair words);
 private:
     numtype count;
 };

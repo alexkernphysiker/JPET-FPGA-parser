@@ -3,9 +3,11 @@
 #include <fstream>
 #include <utility>
 #include <list>
+#include <vector>
 namespace DumpGenerate {
 typedef unsigned long numtype;//only unsigned types are supported
 typedef std::list<numtype> numlist;
+typedef std::vector<numtype> numvect;
 typedef std::pair<numtype,numtype> numpair;
 typedef std::pair<numtype,unsigned char> numwithsize;
 const unsigned char maxtablesize=sizeof(numtype);
@@ -19,7 +21,8 @@ public:
     DumpWrapper &operator |(unsigned char number_size);
     //Sends an unsigned number to be wrapped into the stream (the size should be set before)
     DumpWrapper &operator <<(numtype value);
-    DumpWrapper &operator <<(numlist values);
+	DumpWrapper &operator <<(numlist values);
+	DumpWrapper &operator <<(numvect values);
 	DumpWrapper &operator <<(numwithsize field);
 protected:
     virtual DumpWrapper &write(unsigned char value)=0;

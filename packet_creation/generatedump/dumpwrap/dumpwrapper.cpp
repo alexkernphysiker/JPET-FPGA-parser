@@ -32,8 +32,12 @@ DumpWrapper &DumpWrapper::operator <<(numtype value) {
     return *this;
 }
 DumpWrapper& DumpWrapper::operator<<(numlist values) {
-    for(numtype v:values)*this<<v;
-    return *this;
+	for(numtype v:values)*this<<v;
+	return *this;
+}
+DumpWrapper& DumpWrapper::operator<<(numvect values) {
+	for(numtype v:values)*this<<v;
+	return *this;
 }
 
 DumpWrapper &DumpWrapper::operator <<(numwithsize field) {
