@@ -63,4 +63,11 @@ DumpWrapper& DumpWrapperToText::write(unsigned char value) {
     cnt++;
     return *this;
 }
+TestDump::TestDump(Endian endian): DumpWrapper(endian),m_dump(){}
+TestDump::~TestDump(){}
+DumpWrapper& TestDump::write(unsigned char value){m_dump.push_back(value);}
+unsigned char TestDump::operator[](int index){return m_dump[index];}
+
+
+
 };

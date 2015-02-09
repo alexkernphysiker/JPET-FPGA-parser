@@ -36,12 +36,23 @@ public:
     DumpWrapperToText(std::ofstream* output, Endian endian, unsigned char items_per_column = 8, unsigned char columns_number = 2);
     virtual ~DumpWrapperToText();
 protected:
-    virtual DumpWrapper &write(unsigned char value);
+    virtual DumpWrapper &write(unsigned char value)override;
 private:
     unsigned char per_column;
     unsigned char colunms;
     std::ofstream *out;
     numtype cnt;
+};
+class TestDump:public virtual DumpWrapper{
+public:
+    TestDump(Endian endian);
+    virtual ~TestDump();
+protected:
+	virtual DumpWrapper &write(unsigned char value)override;
+public:
+	unsigned char operator[](int index);
+private:
+	std::vector<unsigned char> m_dump;
 };
 };
 #endif // DUMPWRAPPER_H
