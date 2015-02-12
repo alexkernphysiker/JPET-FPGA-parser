@@ -13,14 +13,13 @@ int main(int arg_cnt,char**arg) {
     output.open(arg[1]);
     if(output.is_open()) {
         DumpWrapperToText wrap(&output,BigEndian);
-        wrap<<(make_shared<Queue>()<<(
-                   make_shared<SubQueue>(0x1d1d,0xd1d1)<<
-                   (make_shared<DataItem>(0xffff)<<1<<make_pair(2,3))<<
-                   (make_shared<DataItem>(0xffff)<<8)
-               )<<(
-                   make_shared<SubQueue>(0x1d1d,0xd1d1)<<
-                   (make_shared<DataItem>(0x7777)<<TDCHeader()<<TDCTime(1,0xff,0xff,0xff,true))
-               ));
+		DetectionSystem alldetectors(0);
+		shared_ptr<TDC> tdc=make_shared<TDC>(0x7777,0);
+		for(numtype i=1;i<=1;i++)tdc<<i;
+		alldetectors<<tdc;
+		TDCTime timeconst(0xff,0xff,0xff,true);
+		for(numtype i=1;i<=1;i++)(*tdc)[i]<<timeconst;
+		wrap<<alldetectors.getEvent(0x1d1d1d);
         output.close();
         printf("File saved.\n");
     } else {
