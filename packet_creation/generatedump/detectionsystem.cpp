@@ -17,8 +17,4 @@ shared_ptr< Queue > DetectionSystem::getEvent(numtype event_id){
 	}
 	return make_shared<Queue>()<<packet;
 }
-
-
-
-
 }

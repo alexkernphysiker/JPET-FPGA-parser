@@ -61,10 +61,8 @@ numtype TDCTime::Epoch(){return epoch;}
 numtype TDCTime::FineTime(){return finetime;}
 bool TDCTime::RisingEdge(){return risingedge;}
 pair<numtype,numtype> TDCTime::returnDataWord(numtype ch_id){
-	numtype rize=0;
-	if(risingedge)rize=bit<11>::set;
 	return make_pair(bits_in<30,29>::set|occupy_bits<27,0>(epoch),
-					 bit<31>::set|occupy_bits<28,22>(ch_id)|occupy_bits<21,12>(finetime)|rize|occupy_bits<10,0>(coasser)
+					 bit<31>::set|occupy_bits<28,22>(ch_id)|occupy_bits<21,12>(finetime)|(risingedge?bit<11>::set:0)|occupy_bits<10,0>(coasser)
 	);
 }
 
