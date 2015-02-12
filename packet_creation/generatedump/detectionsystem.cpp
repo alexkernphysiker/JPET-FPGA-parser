@@ -12,7 +12,8 @@ shared_ptr< Queue > DetectionSystem::getEvent(numtype event_id){
 	auto packet=make_shared<SubQueue>(event_id,trigger);
 	for(auto element:elements){
 		auto data=element->getEvent();
-		if(data)packet<<data;
+		if(data)
+			packet<<data;
 	}
 	return make_shared<Queue>()<<packet;
 }

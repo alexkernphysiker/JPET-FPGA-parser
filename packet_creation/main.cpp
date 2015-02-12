@@ -15,10 +15,10 @@ int main(int arg_cnt,char**arg) {
         DumpWrapperToText wrap(&output,BigEndian);
 		DetectionSystem alldetectors(0);
 		shared_ptr<TDC> tdc=make_shared<TDC>(0x7777,0);
-		for(numtype i=1;i<=1;i++)tdc<<i;
+		for(numtype i=1;i<=5;i++)tdc<<i;
 		alldetectors<<tdc;
 		TDCTime timeconst(0xff,0xff,0xff,true);
-		for(numtype i=1;i<=1;i++)(*tdc)[i]<<timeconst;
+		for(numtype i=1;i<=5;i++)(*tdc)[i]<<timeconst;
 		wrap<<alldetectors.getEvent(0x1d1d1d);
         output.close();
         printf("File saved.\n");

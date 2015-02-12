@@ -47,7 +47,7 @@ FieldSet& FieldSet::setSizePositionAndSize(int pos, unsigned char sz) {
 }
 numtype FieldSet::size() {
     numtype res=0;
-    for(auto field:fields)res+=field.first;
+    for(auto field:fields)res+=field.second;
     if(sizepos>=0)res+=sizesize;
     return res;
 }
