@@ -23,26 +23,59 @@ variable L : line;
 variable K : STD_LOGIC_VECTOR (7 downto 0);
 variable N : STD_LOGIC_VECTOR (7 downto 0);
 variable goodnumber: boolean;
-variable counter: integer:=0;
+variable started: boolean:=false;
+variable inside:boolean:=false;
+variable maybenext:boolean:=false;
+variable wait_cnt:integer:=0;
 begin
 if rising_edge(clock)then
-	if not endfile(source)then
-		counter:=counter+1;
+	if(wait_cnt>0)then
+		data_valid<='0';
+		wait_cnt:=wait_cnt-1;
+	else
 		hread(L,N,goodnumber);
 		if not goodnumber then
-			readline(source,L);
-			counter:=0;
+			if not endfile(source)then
+				readline(source,L);
+				hread(L,N,goodnumber);
+				case N is
+					when "00000000" => maybenext:=true;
+					when others => maybenext:=false;
+				end case;
+				hread(L,N,goodnumber);
+				case N is
+					when "00000000" => inside:=not maybenext;
+					when others => inside:=true;
+				end case;
+				if not inside then
+					wait_cnt:=3;
+					inside:=false;
+					if started then
+						end_packet<='1';
+					else
+						started:=true;
+					end if;
+				end if;
+			else
+				if inside then
+					inside:=false;
+					end_packet<='1';
+				end if;
+			end if;
 			data_valid<='0';
 		else
-			if(counter>2)then
-				data_valid<='1';
-				data_out<=N;
-			else
-				data_valid<='0';
+			if not inside then
+				inside:=true;
+				start_packet<='1';
 			end if;
+			data_valid<='1';
+			data_out<=N;
 		end if;
-	else
-		data_valid<='0';
+	end if;
+else
+	if falling_edge(clock) then
+		start_packet<='0';
+		end_packet<='0';
 	end if;
 end if;
 end process reading;
