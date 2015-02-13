@@ -8,7 +8,11 @@ DumpWrapper::DumpWrapper(Endian endian) {
 }
 DumpWrapper::~DumpWrapper() {}
 DumpWrapper &DumpWrapper::operator |(unsigned char number_size) {
-    if(0==number_size) throw;
+    if(0==number_size){
+		reset_counter();
+		*this|1;
+		return *this;
+	}
     if(number_size>maxtablesize)throw;
     nsize=number_size;
     return *this;
@@ -56,18 +60,34 @@ DumpWrapper& DumpWrapperToText::write(unsigned char value) {
     ios state(nullptr);
     if(0==cnt%(per_column*colunms)) {
         if(cnt>0)*out<<"\n";
-        *out<<hex<<uppercase<<setw(8)<<setfill('0')<<cnt;
+        *out<<hex<<uppercase<<setw(4)<<setfill('0')<<(cnt&0xffff);
     }
     if(0==cnt%(per_column))*out<<" ";
     *out<<" "<<hex<<uppercase<<setw(2)<<setfill('0')<<int(value);
     cnt++;
     return *this;
 }
-TestDump::TestDump(Endian endian): DumpWrapper(endian),m_dump(){}
-TestDump::~TestDump(){}
-DumpWrapper& TestDump::write(unsigned char value){m_dump.push_back(value);}
-unsigned char TestDump::operator[](int index){return m_dump[index];}
-
+numtype DumpWrapperToText::count(){return cnt;}
+DumpWrapper& DumpWrapperToText::reset_counter(){
+	*out<<"\n";
+	cnt=0;
+	return *this;
+}
+DumpWrapperToTextPacketDumps::DumpWrapperToTextPacketDumps(ofstream* output, Endian endian, unsigned char items_per_column, unsigned char columns_number)
+:DumpWrapperToText(output, endian, items_per_column, columns_number),DumpWrapper(endian){}
+DumpWrapperToTextPacketDumps::~DumpWrapperToTextPacketDumps(){}
+DumpWrapper& DumpWrapperToTextPacketDumps::write(unsigned char value){
+	if(count()<last_bytes_repeat_cnt)
+		torepeat[count()]=value;
+    return DumpGenerate::DumpWrapperToText::write(value);
+}
+DumpWrapper& DumpWrapperToTextPacketDumps::reset_counter(){
+	*this|1;
+	unsigned char repeatcnt=count()<last_bytes_repeat_cnt?count():last_bytes_repeat_cnt;
+	for(int i=0;i<repeatcnt;i++)
+		*this<<torepeat[i];
+    return DumpGenerate::DumpWrapperToText::reset_counter();
+}
 
 
 };

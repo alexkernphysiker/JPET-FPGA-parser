@@ -30,12 +30,11 @@ if rising_edge(clock)then
 		counter:=counter+1;
 		hread(L,N,goodnumber);
 		if not goodnumber then
-		---Attention: SHIT code!!!!!!
 			readline(source,L);
 			counter:=0;
 			data_valid<='0';
 		else
-			if(counter>4)then
+			if(counter>2)then
 				data_valid<='1';
 				data_out<=N;
 			else

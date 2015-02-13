@@ -76,6 +76,7 @@ numtype Queue::size() {
 void Queue::outputData(DumpWrapper& output) {
     FieldSet::outputData(output);
     DataContainer::outputData(output);
+	output|0;
 }
 SubQueue::SubQueue(numtype EventID, numtype TriggerNumber):FieldSet(),DataContainer() {
     setSizePositionAndSize(0);
