@@ -37,6 +37,7 @@ numtype DataContainer::size() {
 FieldSet::FieldSet():fields() {
     sizepos=-1;
     sizesize=0;
+	sizeoffset=0;
 }
 FieldSet::~FieldSet() {}
 FieldSet& FieldSet::setSizePositionAndSize(int pos, unsigned char sz) {
@@ -44,7 +45,13 @@ FieldSet& FieldSet::setSizePositionAndSize(int pos, unsigned char sz) {
     if(0==sz)throw;
     sizepos=pos;
     sizesize=sz;
+	return *this;
 }
+FieldSet& FieldSet::SetSizeOffset(numtype val){
+	sizeoffset=val;
+	return *this;
+}
+
 numtype FieldSet::size() {
     numtype res=0;
     for(auto field:fields)res+=field.second;
@@ -59,7 +66,7 @@ FieldSet& FieldSet::AddField(numtype value,unsigned char sz) {
 void FieldSet::outputData(DumpWrapper& output) {
     int index=0;
     for(auto field:fields) {
-		if(sizepos==index)output<<make_pair(size(),sizesize);
+		if(sizepos==index)output<<make_pair(size()-sizeoffset,sizesize);
         output<<field;
         index++;
     }
@@ -79,7 +86,7 @@ void Queue::outputData(DumpWrapper& output) {
 	output|0;
 }
 SubQueue::SubQueue(numtype EventID, numtype TriggerNumber):FieldSet(),DataContainer() {
-    setSizePositionAndSize(0);
+    setSizePositionAndSize(0).SetSizeOffset(4);
 	AddField(0);//actually is ignored
 	AddField(EventID).AddField(TriggerNumber);
 }

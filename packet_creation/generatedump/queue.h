@@ -33,11 +33,13 @@ public:
     virtual numtype size()override;
     virtual void outputData(DumpWrapper &output)override;
     FieldSet &setSizePositionAndSize(int pos, unsigned char sz=WordLength);
+	FieldSet &SetSizeOffset(numtype val);
     FieldSet &AddField(numtype value,unsigned char sz=WordLength);
 private:
     std::list<numwithsize> fields;
     int sizepos;
     unsigned char sizesize;
+	numtype sizeoffset;//this value is substracted from actual size when writting the size field to dump
 };
 class Queue:protected virtual FieldSet, public virtual DataContainer {
 public:
