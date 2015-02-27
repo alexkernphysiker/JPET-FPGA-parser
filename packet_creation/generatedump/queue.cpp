@@ -74,7 +74,7 @@ void FieldSet::outputData(DumpWrapper& output) {
 }
 Queue::Queue():FieldSet(),DataContainer() {
     setSizePositionAndSize(0);
-    AddField(0);//this is another field!!! actually it is ignored
+    AddField(0x00030062);//this is another field!!! actually it is ignored
 }
 Queue::~Queue() {}
 numtype Queue::size() {
@@ -87,7 +87,7 @@ void Queue::outputData(DumpWrapper& output) {
 }
 SubQueue::SubQueue(numtype EventID, numtype TriggerNumber):FieldSet(),DataContainer() {
     setSizePositionAndSize(0).SetSizeOffset(4);
-	AddField(0);//actually is ignored
+	AddField(0x00020001);//actually is ignored
 	AddField(EventID).AddField(TriggerNumber);
 }
 SubQueue::~SubQueue() {}

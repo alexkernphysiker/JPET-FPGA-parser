@@ -22,7 +22,7 @@ shared_ptr< DataItem > TDC::getEvent(){
 	auto res=make_shared<DataItem>(m_id);
 	{//header
 		numtype errorcode=0;
-		numtype somecode=0x77;//it's ignored
+		numtype somecode=0x00;//it's ignored
 		res<<(occupy_bits<15,0>(errorcode)|occupy_bits<23,16>(somecode)|bit<29>::set);
 	}
 	res<<NulTime().returnDataWord(n_ch);
