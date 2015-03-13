@@ -15,11 +15,30 @@ entity parser is
 			  
 			);
 end parser;
-
 architecture Behavioral of parser is
-
 begin
-
-
+reading:process(clk_read)
+variable packet_started: boolean:=false;
+variable queue_started:boolean:=false;
+variable queue_counter:integer:=0;
+variable subqueue_started:boolean:=false;
+variable subqueue_counter:integer:=0;
+begin
+	if(rising_edge(clk_read))then
+		if(packet_started)then
+			case end_packet is
+				when '1' => packet_started:=false;
+				when others => packet_started:=true;
+			end case;
+		else
+			case start_packet is
+				when '1' => packet_started:=true;
+				when others =>packet_started:=true;
+			end case;
+		end if;
+		if(packet_started)then
+		end if;
+	end if;
+end process reading;
 end Behavioral;
 
