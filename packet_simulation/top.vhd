@@ -21,22 +21,22 @@ ARCHITECTURE behavior OF top IS
 	        clk_read : in  STD_LOGIC;
            clk_parse : in  STD_LOGIC;
            reset : in  STD_LOGIC;
+           start_packet : in  STD_LOGIC;
+           end_packet : in  STD_LOGIC;
            data_valid : in  STD_LOGIC;
 			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
-           start_packet : in  STD_LOGIC;
-           end_packet : in  STD_LOGIC;			  
-			  debug_output: out STD_LOGIC_VECTOR (127 downto 0)			  
+			  debug_output: out STD_LOGIC_VECTOR (127 downto 0)
 			);
 	 end component;
 
-   signal clock : std_logic := '0';
-   signal clock_parse : std_logic := '0';
-   signal reset : std_logic := '0';
-
-   signal data_valid : std_logic;
-   signal data_bus : std_logic_vector(7 downto 0);
+   signal clock : std_logic:='0';
+   signal clock_parse : std_logic:='0';
+   signal reset : std_logic:='0';
+   signal data_valid : std_logic:='0';
    signal start_packet : std_logic;
    signal end_packet : std_logic;
+
+   signal data_bus : std_logic_vector(7 downto 0);
    signal debug_out : std_logic_vector(127 downto 0);
    signal debug_out_parser : std_logic_vector(127 downto 0);
 
@@ -53,14 +53,14 @@ BEGIN
           end_packet => end_packet,
           debug_out => debug_out
         );
-   parse:parser PORT map (
+   parse:parser port map (
           clk_read => clock,
           clk_parse => clock_parse,
-			 reset=>reset,
-          data_valid => data_valid,
-          data_in => data_bus,
+			 reset => reset,
           start_packet => start_packet,
           end_packet => end_packet,
+          data_valid => data_valid,
+          data_in => data_bus,
           debug_output => debug_out_parser
 	);
 
@@ -83,8 +83,6 @@ BEGIN
 
    stim_proc: process
    begin		
-      wait for 100 ns;	
-
       wait;
    end process;
 
