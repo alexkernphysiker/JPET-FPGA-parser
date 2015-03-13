@@ -27,10 +27,12 @@ variable started: boolean:=false;
 variable inside:boolean:=false;
 variable maybenext:boolean:=false;
 variable wait_cnt:integer:=0;
+variable data_v: std_logic := '0';
+variable start_p: std_logic := '0';
+variable end_p: std_logic := '0';
 begin
 if rising_edge(clock)then
 	if(wait_cnt>0)then
-		data_valid<='0';
 		wait_cnt:=wait_cnt-1;
 	else
 		hread(L,N,goodnumber);
@@ -51,7 +53,7 @@ if rising_edge(clock)then
 					wait_cnt:=3;
 					inside:=false;
 					if started then
-						end_packet<='1';
+						end_p:='1';
 					else
 						started:=true;
 					end if;
@@ -59,24 +61,27 @@ if rising_edge(clock)then
 			else
 				if inside then
 					inside:=false;
-					end_packet<='1';
+					end_p:='1';
 				end if;
 			end if;
-			data_valid<='0';
+			data_v:='0';
 		else
 			if not inside then
 				inside:=true;
-				start_packet<='1';
+				start_p:='1';
 			end if;
-			data_valid<='1';
+			data_v:='1';
 			data_out<=N;
 		end if;
 	end if;
 else
 	if falling_edge(clock) then
-		start_packet<='0';
-		end_packet<='0';
+		start_p:='0';
+		end_p:='0';
 	end if;
 end if;
+start_packet<=start_p;
+end_packet<=end_p;
+data_valid<=data_v;
 end process reading;
 end Behavioral;
