@@ -1,5 +1,5 @@
-#ifndef ____TDC____
-#define ____TDC____
+#ifndef WZYFLIUESLUXCADJ
+#define WZYFLIUESLUXCADJ
 #include <list>
 #include "queue.h"
 #include "detectionsystem.h"
@@ -54,4 +54,4 @@ namespace DumpGenerate {
 	};
 	inline TDCTime NulTime(){return TDCTime(0,0,0,false);}
 };
-#endif //____TDC____
+#endif
