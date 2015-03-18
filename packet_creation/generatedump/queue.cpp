@@ -73,8 +73,8 @@ void FieldSet::outputData(DumpWrapper& output) {
     if(sizepos==index)output<<make_pair(size(),sizesize);
 }
 Queue::Queue():FieldSet(),DataContainer() {
-    setSizePositionAndSize(0);
-    AddField(0x00030062);//this is another field!!! actually it is ignored
+    setSizePositionAndSize(0,WordLength);
+    AddField(0x00030062,WordLength);//this is another field!!! actually it is ignored
 }
 Queue::~Queue() {}
 numtype Queue::size() {
@@ -86,9 +86,9 @@ void Queue::outputData(DumpWrapper& output) {
 	output|0;
 }
 SubQueue::SubQueue(numtype EventID, numtype TriggerNumber):FieldSet(),DataContainer() {
-    setSizePositionAndSize(0).SetSizeOffset(4);
-	AddField(0x00020001);//actually is ignored
-	AddField(EventID).AddField(TriggerNumber);
+    setSizePositionAndSize(0,WordLength).SetSizeOffset(4);
+	AddField(0x00020001,WordLength);//actually is ignored
+	AddField(EventID,WordLength).AddField(TriggerNumber,WordLength);
 }
 SubQueue::~SubQueue() {}
 numtype SubQueue::size() {
@@ -104,7 +104,7 @@ DataItem::DataItem(numtype deviceID):FieldSet() {
 }
 DataItem::~DataItem() {}
 DataItem& DataItem::operator<<(numtype word) {
-    AddField(word);
+    AddField(word,WordLength);
     count++;
     return *this;
 }

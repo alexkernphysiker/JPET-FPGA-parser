@@ -32,9 +32,9 @@ public:
     virtual ~FieldSet();
     virtual numtype size()override;
     virtual void outputData(DumpWrapper &output)override;
-    FieldSet &setSizePositionAndSize(int pos, unsigned char sz=WordLength);
+    FieldSet &setSizePositionAndSize(int pos, unsigned char sz);
 	FieldSet &SetSizeOffset(numtype val);
-    FieldSet &AddField(numtype value,unsigned char sz=WordLength);
+    FieldSet &AddField(numtype value,unsigned char sz);
 private:
     std::list<numwithsize> fields;
     int sizepos;
