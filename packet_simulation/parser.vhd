@@ -17,6 +17,8 @@ architecture Behavioral of parser is
 begin
 reading:process(clk_read)
 variable packet_started: boolean:=false;
+variable current_number: integer:=0;
+variable current_number_counter: integer:=0;
 begin
 	debug_output(1)<=data_valid;
 	debug_output(2)<=start_packet;
@@ -34,6 +36,15 @@ begin
 		if(packet_started)then
 			if(data_valid>'0')then
 				debug_output(0)<='1';
+				if(current_number_counter>0)then
+					for i in 7 downto 0 loop
+						current_number:=current_number*2;
+						if(data_in(i)='1')then
+							current_number:=current_number+1;
+						end if;
+					end loop;
+				end if;
+				
 			else
 				debug_output(0)<='0';
 			end if;
