@@ -11,7 +11,8 @@ entity parser is
            data_valid : in  STD_LOGIC;
 			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
 			  isreading:out std_logic;
-			  counter:out integer
+			  counter:out integer;
+			  size:out integer
 			);
 end parser;
 architecture Behavioral of parser is
@@ -24,6 +25,7 @@ variable queue_counter:integer:=0;
 variable queue_size:integer:=0;
 begin
 	counter<=queue_counter;
+	size<=queue_size;
 	if(falling_edge(clk_read))then
 		if packet_started then
 			if end_packet>'0' then
