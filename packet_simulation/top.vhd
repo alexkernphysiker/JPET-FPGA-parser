@@ -12,8 +12,7 @@ ARCHITECTURE behavior OF top IS
          data_valid : OUT  std_logic;
          data_out : OUT  std_logic_vector(7 downto 0);
          start_packet : OUT  std_logic;
-         end_packet : OUT  std_logic;
-         debug_out : OUT  std_logic_vector(127 downto 0)
+         end_packet : OUT  std_logic
         );
     END COMPONENT;
     component parser
@@ -24,8 +23,7 @@ ARCHITECTURE behavior OF top IS
            start_packet : in  STD_LOGIC;
            end_packet : in  STD_LOGIC;
            data_valid : in  STD_LOGIC;
-			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
-			  debug_output: out STD_LOGIC_VECTOR (127 downto 0)
+			  data_in : in STD_LOGIC_VECTOR(7 downto 0)
 			);
 	 end component;
 
@@ -35,14 +33,10 @@ ARCHITECTURE behavior OF top IS
    signal data_valid : std_logic:='0';
    signal start_packet : std_logic;
    signal end_packet : std_logic;
-
    signal data_bus : std_logic_vector(7 downto 0);
-   signal debug_out : std_logic_vector(127 downto 0);
-   signal debug_out_parser : std_logic_vector(127 downto 0);
 
    constant clock_period : time := 10 ns;
    constant clock_parser_period : time := 10 ns;
- 
 BEGIN
  
    uut: packet_simulation PORT MAP (
@@ -50,8 +44,7 @@ BEGIN
           data_valid => data_valid,
           data_out => data_bus,
           start_packet => start_packet,
-          end_packet => end_packet,
-          debug_out => debug_out
+          end_packet => end_packet
         );
    parse:parser port map (
           clk_read => clock,
@@ -60,8 +53,7 @@ BEGIN
           start_packet => start_packet,
           end_packet => end_packet,
           data_valid => data_valid,
-          data_in => data_bus,
-          debug_output => debug_out_parser
+          data_in => data_bus
 	);
 
    clock_process :process

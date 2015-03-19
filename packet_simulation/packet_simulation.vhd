@@ -10,8 +10,7 @@ entity packet_simulation is
            data_valid : out  STD_LOGIC;
            data_out : out  STD_LOGIC_VECTOR(7 downto 0);
            start_packet : out  STD_LOGIC;
-           end_packet : out  STD_LOGIC;
-			  debug_out: out STD_LOGIC_VECTOR(127 downto 0)
+           end_packet : out  STD_LOGIC
 			 );
 end packet_simulation;
 

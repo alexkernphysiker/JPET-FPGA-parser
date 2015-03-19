@@ -10,7 +10,8 @@ entity parser is
            end_packet : in  STD_LOGIC;
            data_valid : in  STD_LOGIC;
 			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
-			  debug_output: out STD_LOGIC_VECTOR (127 downto 0)
+			  isreading:out std_logic;
+			  counter:out integer
 			);
 end parser;
 architecture Behavioral of parser is
@@ -19,10 +20,10 @@ reading:process(clk_read)
 variable packet_started: boolean:=false;
 variable current_number: integer:=0;
 variable current_number_counter: integer:=0;
+variable queue_counter:integer:=0;
+variable queue_size:integer:=0;
 begin
-	debug_output(1)<=data_valid;
-	debug_output(2)<=start_packet;
-	debug_output(3)<=end_packet;
+	counter<=queue_counter;
 	if(falling_edge(clk_read))then
 		if packet_started then
 			if end_packet>'0' then
@@ -35,7 +36,28 @@ begin
 		end if;
 		if(packet_started)then
 			if(data_valid>'0')then
-				debug_output(0)<='1';
+				isreading<='1';
+				if(queue_counter=0)then
+					current_number_counter:=4;
+				else
+					if(queue_counter=4)then
+						queue_size:=current_number;
+					else
+						if(queue_size>0)then
+							if(queue_counter>=queue_size)then
+								queue_size:=0;
+								queue_counter:=0;
+								current_number_counter:=4;
+							end if;
+						else
+							if(queue_counter>=4)then
+								queue_size:=0;
+								queue_counter:=0;
+								current_number_counter:=4;
+							end if;
+						end if;
+					end if;
+				end if;
 				if(current_number_counter>0)then
 					for i in 7 downto 0 loop
 						current_number:=current_number*2;
@@ -43,13 +65,14 @@ begin
 							current_number:=current_number+1;
 						end if;
 					end loop;
+					current_number_counter:=current_number_counter-1;
 				end if;
-				
+				queue_counter:=queue_counter+1;
 			else
-				debug_output(0)<='0';
+				isreading<='0';
 			end if;
 		else
-			debug_output(0)<='0';
+			isreading<='0';
 		end if;
 	end if;
 end process reading;
