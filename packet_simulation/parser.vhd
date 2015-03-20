@@ -23,9 +23,11 @@ variable current_number: integer:=0;
 variable current_number_counter: integer:=0;
 variable queue_counter:integer:=0;
 variable queue_size:integer:=0;
+variable subqueue_size:integer:=0;
+variable subqueue_counter:integer:=0;
 begin
-	counter<=queue_counter;
-	size<=queue_size;
+	counter<=subqueue_counter;
+	size<=subqueue_size;
 	if(falling_edge(clk_read))then
 		if packet_started then
 			if end_packet>'0' then
@@ -52,7 +54,16 @@ begin
 									queue_size:=0;
 									queue_counter:=0;
 									current_number_counter:=4;
-								else
+								end if;
+								subqueue_size:=0;
+								subqueue_counter:=0;			
+							else
+								if(queue_counter=8)then
+									current_number_counter:=4;
+								end if;
+								if(queue_counter=12)then
+									subqueue_size:=current_number;
+									subqueue_counter:=0;
 								end if;
 							end if;
 						else
@@ -74,6 +85,11 @@ begin
 					current_number_counter:=current_number_counter-1;
 				end if;
 				queue_counter:=queue_counter+1;
+				if(subqueue_size>0)then
+					subqueue_counter:=subqueue_counter+1;
+				else
+					subqueue_counter:=0;
+				end if;
 			else
 				isreading<='0';
 			end if;
