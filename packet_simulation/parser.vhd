@@ -41,15 +41,19 @@ begin
 				isreading<='1';
 				if(queue_counter=0)then
 					current_number_counter:=4;
+					current_number:=0;
 				else
 					if(queue_counter=4)then
 						queue_size:=current_number;
 					else
 						if(queue_size>0)then
 							if(queue_counter>=queue_size)then
-								queue_size:=0;
-								queue_counter:=0;
-								current_number_counter:=4;
+								if(queue_counter>=(queue_size+32))then
+									queue_size:=0;
+									queue_counter:=0;
+									current_number_counter:=4;
+								else
+								end if;
 							end if;
 						else
 							if(queue_counter>=4)then
