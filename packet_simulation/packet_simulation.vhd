@@ -33,6 +33,7 @@ begin
 if rising_edge(clock)then
 	if(wait_cnt>0)then
 		wait_cnt:=wait_cnt-1;
+		end_p:='0';
 	else
 		hread(L,N,goodnumber);
 		if not goodnumber then
@@ -53,14 +54,23 @@ if rising_edge(clock)then
 					inside:=false;
 					if started then
 						end_p:='1';
+						start_p:='0';
 					else
 						started:=true;
+						end_p:='0';
 					end if;
+				else
+					end_p:='0';
+					start_p:='0';
 				end if;
 			else
 				if inside then
 					inside:=false;
+					start_p:='0';
 					end_p:='1';
+				else
+					start_p:='0';
+					end_p:='0';
 				end if;
 			end if;
 			data_v:='0';
@@ -68,15 +78,14 @@ if rising_edge(clock)then
 			if not inside then
 				inside:=true;
 				start_p:='1';
+				end_p:='0';
+			else
+				end_p:='0';
+				start_p:='0';
 			end if;
 			data_v:='1';
 			data_out<=N;
 		end if;
-	end if;
-else
-	if falling_edge(clock) then
-		start_p:='0';
-		end_p:='0';
 	end if;
 end if;
 start_packet<=start_p;
