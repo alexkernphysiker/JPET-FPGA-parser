@@ -9,6 +9,7 @@ namespace DumpGenerate {
 			if(channel->ID()==ch->ID())
 				throw;
 			pluged_channels.push_back(channel);
+		return *this;
 	}
 	TDC& TDC::operator<<(numtype channel_id){return *this<<make_shared<TDCChannel>(channel_id);}
 	const shared_ptr< TDCChannel > TDC::operator[](numtype channel_id){

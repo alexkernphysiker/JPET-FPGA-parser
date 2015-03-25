@@ -5,6 +5,7 @@
 #include <utility>
 #include "dumpwrap/dumpwrapper.h"
 namespace DumpGenerate {
+	using namespace std;
 	class AbstractDataStructure {
 	public:
 		virtual ~AbstractDataStructure();
@@ -12,18 +13,18 @@ namespace DumpGenerate {
 		virtual void outputData(DumpWrapper &output)=0;
 	};
 	DumpWrapper &operator <<(DumpWrapper &output, AbstractDataStructure *data);
-	DumpWrapper &operator <<(DumpWrapper &output, std::shared_ptr<AbstractDataStructure> data);
+	DumpWrapper &operator <<(DumpWrapper &output, shared_ptr<AbstractDataStructure> data);
 	class DataContainer:public virtual AbstractDataStructure {
 	public:
 		DataContainer();
 		virtual ~DataContainer();
 		virtual numtype size()override;
 		virtual void outputData(DumpWrapper &output)override;
-		DataContainer &operator<<(std::shared_ptr<AbstractDataStructure> item);
+		DataContainer &operator<<(shared_ptr<AbstractDataStructure> item);
 		DataContainer &operator<<(AbstractDataStructure *item);
 		unsigned int SubItemCount();
 	private:
-		std::list<std::shared_ptr<AbstractDataStructure>> m_data;
+		list<shared_ptr<AbstractDataStructure>> m_data;
 	};
 	const unsigned char WordLength=4;
 	class FieldSet:public virtual AbstractDataStructure {
@@ -36,7 +37,7 @@ namespace DumpGenerate {
 		FieldSet &SetSizeOffset(numtype val);
 		FieldSet &AddField(numtype value,unsigned char sz);
 	private:
-		std::list<numwithsize> fields;
+		list<numwithsize> fields;
 		int sizepos;
 		unsigned char sizesize;
 		numtype sizeoffset;//this value is substracted from actual size when writting the size field to dump
@@ -69,8 +70,8 @@ namespace DumpGenerate {
 	private:
 		numtype count;
 	};
-	template<class outputtype,class datatype>std::shared_ptr<outputtype>
-	operator<<(std::shared_ptr<outputtype> output,datatype data) {
+	template<class outputtype,class datatype>
+	shared_ptr<outputtype> operator<<(shared_ptr<outputtype> output,datatype data) {
 		*output << data;
 		return output;
 	}

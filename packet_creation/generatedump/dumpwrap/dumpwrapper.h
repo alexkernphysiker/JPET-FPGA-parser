@@ -5,11 +5,12 @@
 #include <list>
 #include <vector>
 namespace DumpGenerate {
+	using namespace std;
 	typedef unsigned long numtype;//only unsigned types are supported
-	typedef std::list<numtype> numlist;
-	typedef std::vector<numtype> numvect;
-	typedef std::pair<numtype,numtype> numpair;
-	typedef std::pair<numtype,unsigned char> numwithsize;
+	typedef list<numtype> numlist;
+	typedef vector<numtype> numvect;
+	typedef pair<numtype,numtype> numpair;
+	typedef pair<numtype,unsigned char> numwithsize;
 	const unsigned char maxtablesize=sizeof(numtype);
 	enum Endian {LittleEndian,BigEndian};
 	class DumpWrapper {
@@ -34,7 +35,7 @@ namespace DumpGenerate {
 	};
 	class DumpWrapperToText:public virtual DumpWrapper {
 	public:
-		DumpWrapperToText(std::ofstream* output, Endian endian, unsigned char items_per_column = 8, unsigned char columns_number = 2);
+		DumpWrapperToText(ofstream* output, Endian endian, unsigned char items_per_column = 8, unsigned char columns_number = 2);
 		virtual ~DumpWrapperToText();
 	protected:
 		virtual DumpWrapper &write(unsigned char value)override;
@@ -43,13 +44,13 @@ namespace DumpGenerate {
 	private:
 		unsigned char per_column;
 		unsigned char colunms;
-		std::ofstream *out;
+		ofstream *out;
 		numtype cnt;
 	};
 	const unsigned char last_bytes_repeat_cnt=32;
 	class DumpWrapperToTextPacketDumps:public virtual DumpWrapperToText{
 	public:
-		DumpWrapperToTextPacketDumps(std::ofstream* output, Endian endian, unsigned char items_per_column = 8, unsigned char columns_number = 2);
+		DumpWrapperToTextPacketDumps(ofstream* output, Endian endian, unsigned char items_per_column = 8, unsigned char columns_number = 2);
 		virtual ~DumpWrapperToTextPacketDumps();
 	protected:
 		virtual DumpWrapper &write(unsigned char value)override;
