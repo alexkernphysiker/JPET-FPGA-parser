@@ -10,93 +10,45 @@ entity parser is
            end_packet : in  STD_LOGIC;
            data_valid : in  STD_LOGIC;
 			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
-			  isreading:out std_logic;
-			  counter:out integer;
-			  size:out integer
+			  isreading:out std_logic
 			);
 end parser;
 architecture Behavioral of parser is
+type data_state is(IDLE,PACKET,DATA);
+signal current_data_state,next_data_state:data_state:=IDLE;
+type parcer_state is(IDLE,QUEUE_HEADER,SUBQUEUE_HEADER,DATAITEM);
+signal current_parcer_state,next_parcer_state:parcer_state:=IDLE;
 begin
-reading:process(clk_read)
-variable packet_started: boolean:=false;
-variable current_number: integer:=0;
-variable current_number_counter: integer:=0;
-variable queue_counter:integer:=0;
-variable queue_size:integer:=0;
-variable subqueue_size:integer:=0;
-variable subqueue_counter:integer:=0;
+parcer_state_proc:process(clk_read,reset)
 begin
-	counter<=subqueue_counter;
-	size<=subqueue_size;
-	if(falling_edge(clk_read))then
-		if packet_started then
-			if end_packet>'0' then
-				packet_started:=false;
-			end if;
-		else
-			if start_packet>'0' then
-				packet_started:=true;
-			end if;
+	if reset='1' then
+		current_data_state<=IDLE;
+		current_parcer_state<=IDLE;
+	elsif rising_edge(clk_read) then
+		current_data_state<=next_data_state;
+		current_parcer_state<=next_parcer_state;
+	end if;
+end process parcer_state_proc;
+packet_state_proc:process(clk_read)
+begin
+	if falling_edge(clk_read) then
+		if start_packet='1' then
+			current_data_state<=PACKET;
+			next_data_state<=PACKET;
 		end if;
-		if(packet_started)then
-			if(data_valid>'0')then
-				isreading<='1';
-				if(queue_counter=0)then
-					current_number_counter:=4;
-					current_number:=0;
-				else
-					if(queue_counter=4)then
-						queue_size:=current_number;
-					else
-						if(queue_size>0)then
-							if(queue_counter>=queue_size)then
-								if(queue_counter>=(queue_size+32))then
-									queue_size:=0;
-									queue_counter:=0;
-									current_number_counter:=4;
-								end if;
-								subqueue_size:=0;
-								subqueue_counter:=0;			
-							else
-								if(queue_counter=8)then
-									current_number_counter:=4;
-								end if;
-								if(queue_counter=12)then
-									subqueue_size:=current_number;
-									subqueue_counter:=0;
-								end if;
-							end if;
-						else
-							if(queue_counter>=4)then
-								queue_size:=0;
-								queue_counter:=0;
-								current_number_counter:=4;
-							end if;
-						end if;
-					end if;
-				end if;
-				if(current_number_counter>0)then
-					for i in 7 downto 0 loop
-						current_number:=current_number*2;
-						if(data_in(i)='1')then
-							current_number:=current_number+1;
-						end if;
-					end loop;
-					current_number_counter:=current_number_counter-1;
-				end if;
-				queue_counter:=queue_counter+1;
-				if(subqueue_size>0)then
-					subqueue_counter:=subqueue_counter+1;
-				else
-					subqueue_counter:=0;
-				end if;
-			else
-				isreading<='0';
-			end if;
-		else
-			isreading<='0';
+		if end_packet='1' then
+			next_data_state<=IDLE;
 		end if;
 	end if;
-end process reading;
+end process packet_state_proc;
+data_state_proc:process(clk_read)
+begin
+	if falling_edge(clk_read)then
+		if data_valid='1' then
+			if current_data_state=PACKET then
+				current_data_state<=DATA;
+			end if;
+		end if;
+	end if;
+end process data_state_proc;
 end Behavioral;
-
