@@ -14,10 +14,10 @@ entity parser is
 			);
 end parser;
 architecture Behavioral of parser is
-type data_state is(IDLE,PACKET,DATA);
-signal current_data_state,next_data_state:data_state:=IDLE;
+type data_state is(IDLE,PACKET);
+signal current_data_state,next_data_state:data_state;
 type parcer_state is(IDLE,QUEUE_HEADER,SUBQUEUE_HEADER,DATAITEM);
-signal current_parcer_state,next_parcer_state:parcer_state:=IDLE;
+signal current_parcer_state,next_parcer_state:parcer_state;
 begin
 parcer_state_proc:process(clk_read,reset)
 begin
@@ -33,7 +33,7 @@ packet_state_proc:process(clk_read)
 begin
 	if falling_edge(clk_read) then
 		if start_packet='1' then
-			current_data_state<=PACKET;
+			--current_data_state<=PACKET;
 			next_data_state<=PACKET;
 		end if;
 		if end_packet='1' then
@@ -46,7 +46,7 @@ begin
 	if falling_edge(clk_read)then
 		if data_valid='1' then
 			if current_data_state=PACKET then
-				current_data_state<=DATA;
+				--
 			end if;
 		end if;
 	end if;
