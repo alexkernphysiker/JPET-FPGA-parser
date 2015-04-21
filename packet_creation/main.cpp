@@ -13,7 +13,7 @@ int main(int arg_cnt,char**arg) {
 	output.open(arg[1]);
 	if(output.is_open()) {
 		DumpWrapperToTextPacketDumps wrap(&output,BigEndian);
-		DetectionSystem alldetectors(0);
+		DetectionSystem alldetectors(0xff);
 		shared_ptr<TDC> tdc=make_shared<TDC>(0x7777,0);
 		for(numtype i=1;i<=5;i++)tdc<<i;
 		alldetectors<<tdc;
