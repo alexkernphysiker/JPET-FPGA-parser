@@ -53,6 +53,15 @@ begin
 		else
 			take_data<='0';
 		end if;
+	else
+		if rising_edge(clk_read) then
+			take_data<='0';
+		end if;
 	end if;
 end process data_state_proc;
+parcer_main:process(take_data)
+begin
+	if rising_edge(take_data)then
+	end if;
+end process parcer_main;
 end Behavioral;
