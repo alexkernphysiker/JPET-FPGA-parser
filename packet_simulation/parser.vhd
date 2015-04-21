@@ -16,7 +16,7 @@ end parser;
 architecture Behavioral of parser is
 type data_state is(IDLE,PACKET);
 signal current_data_state,next_data_state:data_state:=IDLE;
-type parcer_state is(IDLE,QUEUE_HEADER,SUBQUEUE_HEADER,DATAITEM);
+type parcer_state is(IDLE,QUEUE_HEADER,SUBQUEUE_HEADER,DATAITEM,QUEUE_TAIL);
 signal current_parcer_state,next_parcer_state:parcer_state:=IDLE;
 signal take_data:std_logic:='0';
 begin
@@ -62,6 +62,7 @@ end process data_state_proc;
 parcer_main:process(take_data)
 begin
 	if rising_edge(take_data)then
+		
 	end if;
 end process parcer_main;
 end Behavioral;
