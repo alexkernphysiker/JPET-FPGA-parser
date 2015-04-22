@@ -44,13 +44,11 @@ begin
 end process parcer_state_proc;
 packet_state_proc:process(clk_read)
 begin
-	if falling_edge(clk_read) then
-		if start_packet='1' then
-			next_data_state<=PACKET;
-		end if;
-		if end_packet='1' then
-			next_data_state<=IDLE;
-		end if;
+	if start_packet='1' then
+		next_data_state<=PACKET;
+	end if;
+	if end_packet='1' then
+		next_data_state<=IDLE;
 	end if;
 end process packet_state_proc;
 data_state_proc:process(clk_read)
@@ -153,6 +151,8 @@ begin
 				subqueue_cnt:=0;
 			end if;
 		end case;
+	elsif not(current_parcer_state=QUEUE_BODY) then
+		next_subqueue_state<=IDLE;
 	end if;
 end process parcer_subqueue;
 end Behavioral;
