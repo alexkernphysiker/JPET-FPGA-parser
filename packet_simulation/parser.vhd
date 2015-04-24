@@ -25,6 +25,10 @@ type subqueue_state is(IDLE,SUBHEADER,SUBQUEUE);
 signal current_subqueue_state,next_subqueue_state:subqueue_state:=IDLE;
 signal eventID,triggerID:std_logic_vector(31 downto 0);
 
+type dataitem_state is (IDLE,ITEMSIZEREADING,DEVICEIDREADING);
+signal current_item_state,next_item_state:dataitem_state:=IDLE;
+signal deviceID:std_logic_vector(15 downto 1);
+
 begin
 reading_out_proc:process(isreading)
 begin
@@ -36,10 +40,12 @@ begin
 		current_data_state<=IDLE;
 		current_parcer_state<=IDLE;
 		current_subqueue_state<=IDLE;
+		current_item_state<=IDLE;
 	elsif rising_edge(clk_read) then
 		current_data_state<=next_data_state;
 		current_parcer_state<=next_parcer_state;
 		current_subqueue_state<=next_subqueue_state;
+		current_item_state<=next_item_state;
 	end if;
 end process parcer_state_proc;
 packet_state_proc:process(clk_read)
@@ -155,4 +161,11 @@ begin
 		next_subqueue_state<=IDLE;
 	end if;
 end process parcer_subqueue;
+parce_dataitems: process(isreading)
+begin
+	if(rising_edge(isreading))and (current_subqueue_state=SUBQUEUE)then
+	elsif not(current_subqueue_state=SUBQUEUE) then
+		next_item_state<=IDLE;
+	end if;
+end process parce_dataitems;
 end Behavioral;
