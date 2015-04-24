@@ -164,6 +164,7 @@ end process parcer_subqueue;
 parce_dataitems: process(isreading)
 begin
 	if(rising_edge(isreading))and (current_subqueue_state=SUBQUEUE)then
+		
 	elsif not(current_subqueue_state=SUBQUEUE) then
 		next_item_state<=IDLE;
 	end if;
