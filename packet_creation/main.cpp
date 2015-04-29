@@ -14,15 +14,20 @@ int main(int arg_cnt,char**arg) {
 	if(output.is_open()) {
 		DumpWrapperToTextPacketDumps wrap(&output,BigEndian);
 		DetectionSystem alldetectors(0xff);
-		shared_ptr<TDC> tdc=make_shared<TDC>(0x7777,0);
-		for(numtype i=1;i<=5;i++)tdc<<i;
-		alldetectors<<tdc;
+		shared_ptr<TDC> tdc1=make_shared<TDC>(0x7771,0);
+		for(numtype i=1;i<=5;i++)tdc1<<i;
+		shared_ptr<TDC> tdc2=make_shared<TDC>(0x7772,0);
+		for(numtype i=1;i<=5;i++)tdc2<<i;
+		alldetectors<<tdc1<<tdc2;
 		TDCTime timeconst(0xff,0xff,0xff,true);
-		for(numtype i=1;i<=5;i++)(*tdc)[i]<<timeconst;
+		for(numtype i=1;i<=5;i++)(*tdc1)[i]<<timeconst;
+		for(numtype i=1;i<=5;i++)(*tdc2)[i]<<timeconst;
 		wrap<<alldetectors.getEvent(0x1d1d00);
 		wrap<<alldetectors.getEvent(0x1d1d01);
-		for(numtype i=1;i<=5;i++)(*tdc)[i]<<timeconst;
+		for(numtype i=1;i<=5;i++)(*tdc2)[i]<<timeconst;
 		wrap<<alldetectors.getEvent(0x1d1d02);
+		for(numtype i=1;i<=5;i++)(*tdc1)[i]<<timeconst;
+		wrap<<alldetectors.getEvent(0x1d1d03);
 		output.close();
 		printf("File saved.\n");
 	} else {
