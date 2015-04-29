@@ -18,7 +18,6 @@ ARCHITECTURE behavior OF top IS
     component parser
 	 Port ( 
 	        clk_read : in  STD_LOGIC;
-           clk_parse : in  STD_LOGIC;
            reset : in  STD_LOGIC;
            start_packet : in  STD_LOGIC;
            end_packet : in  STD_LOGIC;
@@ -28,7 +27,6 @@ ARCHITECTURE behavior OF top IS
 	 end component;
 
    signal clock : std_logic:='0';
-   signal clock_parse : std_logic:='0';
    signal reset : std_logic:='0';
    signal data_valid : std_logic:='0';
    signal start_packet : std_logic;
@@ -36,7 +34,6 @@ ARCHITECTURE behavior OF top IS
    signal data_bus : std_logic_vector(7 downto 0);
 
    constant clock_period : time := 10 ns;
-   constant clock_parser_period : time := 10 ns;
 BEGIN
  
    uut: packet_simulation PORT MAP (
@@ -48,7 +45,6 @@ BEGIN
         );
    parse:parser port map (
           clk_read => clock,
-          clk_parse => clock_parse,
 			 reset => reset,
           start_packet => start_packet,
           end_packet => end_packet,
@@ -64,15 +60,6 @@ BEGIN
 		wait for clock_period/2;
    end process;
 	
-   clock_parser_process :process
-   begin
-		clock_parse <= '0';
-		wait for clock_parser_period/2;
-		clock_parse <= '1';
-		wait for clock_parser_period/2;
-   end process;
- 
-
    stim_proc: process
    begin		
       wait;

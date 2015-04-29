@@ -3,14 +3,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity parser is
     Port ( 
+				--- INPUT
 	        clk_read : in  STD_LOGIC;
-           clk_parse : in  STD_LOGIC;
            reset : in  STD_LOGIC;
            start_packet : in  STD_LOGIC;
            end_packet : in  STD_LOGIC;
            data_valid : in  STD_LOGIC;
 			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
-			  is_reading: out STD_LOGIC
+			  ----DATA OUTPUT
+			  eventID: out std_logic_vector(31 downto 0);
+			  triggerID: out std_logic_vector(31 downto 0);
+			  deviceID: out std_logic_vector(15 downto 0);
+			  dataWORD: out std_logic_vector(31 downto 0);
+			  new_data: out std_logic
 			);
 end parser;
 architecture Behavioral of parser is
@@ -23,17 +28,11 @@ signal current_parcer_state,next_parcer_state:queue_state:=IDLE;
 
 type subqueue_state is(IDLE,SUBHEADER,SUBQUEUE);
 signal current_subqueue_state,next_subqueue_state:subqueue_state:=IDLE;
-signal eventID,triggerID:std_logic_vector(31 downto 0);
 
 type dataitem_state is (IDLE,ITEMHEADER,ITEMBODY);
 signal current_item_state,next_item_state:dataitem_state:=IDLE;
-signal deviceID:std_logic_vector(15 downto 0);
 
 begin
-reading_out_proc:process(isreading)
-begin
-	is_reading<=isreading;
-end process reading_out_proc;
 parcer_state_proc:process(clk_read,reset)
 begin
 	if reset='1' then
@@ -176,6 +175,7 @@ end process parcer_subqueue;
 parce_dataitems: process(isreading)
 variable dataitem_cnt,data_words_number:integer:=0;
 variable device_id:std_logic_vector(15 downto 0);
+variable current_word:std_logic_vector(31 downto 0);
 begin
 	if(rising_edge(isreading))and (current_subqueue_state=SUBQUEUE)then
 		if not(current_item_state=IDLE)then
@@ -210,12 +210,24 @@ begin
 				end if;
 			end if;
 		when ITEMBODY =>
+			for i in 7 downto 0 loop
+				current_word((3-(dataitem_cnt mod 4))*8+i):=data_in(i);
+			end loop;
+			if (dataitem_cnt mod 4)=3 then
+				dataWORD<=current_word;
+				new_data<='1';
+			end if;
 			if dataitem_cnt>=((data_words_number+1)*4)-1 then
 				next_item_state<=IDLE;
 			end if;
 		end case;
-	elsif not(current_subqueue_state=SUBQUEUE) then
-		next_item_state<=IDLE;
+	else 
+		if falling_edge(isreading)then
+			new_data<='0';
+		end if;
+		if not(current_subqueue_state=SUBQUEUE) then
+			next_item_state<=IDLE;
+		end if;
 	end if;
 end process parce_dataitems;
 end Behavioral;
