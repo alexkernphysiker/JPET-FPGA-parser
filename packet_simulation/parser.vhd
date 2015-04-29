@@ -25,9 +25,9 @@ type subqueue_state is(IDLE,SUBHEADER,SUBQUEUE);
 signal current_subqueue_state,next_subqueue_state:subqueue_state:=IDLE;
 signal eventID,triggerID:std_logic_vector(31 downto 0);
 
-type dataitem_state is (IDLE,ITEMSIZEREADING,DEVICEIDREADING);
+type dataitem_state is (IDLE,ITEMHEADER,ITEMBODY);
 signal current_item_state,next_item_state:dataitem_state:=IDLE;
-signal deviceID:std_logic_vector(15 downto 1);
+signal deviceID:std_logic_vector(15 downto 0);
 
 begin
 reading_out_proc:process(isreading)
@@ -87,6 +87,12 @@ begin
 			next_parcer_state<=QUEUE_HEADER;
 			queue_cnt:=0;
 			queue_size:=0;
+			for i in 7 downto 0 loop
+				queue_size:=queue_size*2;
+				if data_in(i)='1' then
+					queue_size:=queue_size+1;
+				end if;
+			end loop;
 		when QUEUE_HEADER =>
 			if queue_cnt<4 then
 				for i in 7 downto 0 loop
@@ -124,6 +130,12 @@ begin
 				next_subqueue_state<=SUBHEADER;
 				subqueue_cnt:=0;
 				subqueue_size:=0;
+				for i in 7 downto 0 loop
+					subqueue_size:=subqueue_size*2;
+					if data_in(i)='1' then
+						subqueue_size:=subqueue_size+1;
+					end if;
+				end loop;
 		when SUBHEADER =>
 			if subqueue_cnt<4 then
 				for i in 7 downto 0 loop
@@ -162,9 +174,46 @@ begin
 	end if;
 end process parcer_subqueue;
 parce_dataitems: process(isreading)
+variable dataitem_cnt,data_words_number:integer:=0;
+variable device_id:std_logic_vector(15 downto 0);
 begin
 	if(rising_edge(isreading))and (current_subqueue_state=SUBQUEUE)then
-		
+		if not(current_item_state=IDLE)then
+			dataitem_cnt:=dataitem_cnt+1;
+		end if;
+		case current_item_state is
+		when IDLE =>
+			dataitem_cnt:=0;
+			data_words_number:=0;
+			for i in 7 downto 0 loop
+				data_words_number:=data_words_number*2;
+				if data_in(i)='1' then
+					data_words_number:=data_words_number+1;
+				end if;
+			end loop;
+			next_item_state<=ITEMHEADER;
+		when ITEMHEADER =>
+			if dataitem_cnt<2 then
+				for i in 7 downto 0 loop
+					data_words_number:=data_words_number*2;
+					if data_in(i)='1' then
+						data_words_number:=data_words_number+1;
+					end if;
+				end loop;
+			else
+				for i in 7 downto 0 loop
+					device_id((3-dataitem_cnt)*8+i):=data_in(i);
+				end loop;
+				if dataitem_cnt=3 then
+					deviceID<=device_id;
+					next_item_state<=ITEMBODY;
+				end if;
+			end if;
+		when ITEMBODY =>
+			if dataitem_cnt>=((data_words_number+1)*4)-1 then
+				next_item_state<=IDLE;
+			end if;
+		end case;
 	elsif not(current_subqueue_state=SUBQUEUE) then
 		next_item_state<=IDLE;
 	end if;
