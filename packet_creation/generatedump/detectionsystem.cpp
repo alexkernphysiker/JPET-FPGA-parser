@@ -7,6 +7,7 @@ namespace DumpGenerate {
 	DetectionSystem::~DetectionSystem(){}
 	DetectionSystem& DetectionSystem::operator<<(shared_ptr<IDetector> element){
 		elements.push_back(element);
+		return *this;
 	}
 	shared_ptr< Queue > DetectionSystem::getEvent(numtype event_id){
 		auto packet=make_shared<SubQueue>(event_id,trigger);
