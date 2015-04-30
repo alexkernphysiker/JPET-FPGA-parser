@@ -13,7 +13,39 @@ entity devicefilter is
 end devicefilter;
 
 architecture Behavioral of devicefilter is
-
+signal accept:std_logic:='0';
 begin
 
+check_device:process(new_data)
+begin
+	if rising_edge(new_data) then
+		accept<='1';
+	elsif falling_edge(new_data) then
+		accept<='0';
+	end if;
+end process check_device;
+
+accept_device:process(accept)
+begin
+	if rising_edge(accept)then
+		accepted<='1';
+	elsif falling_edge(accept) then
+		accepted<='0';
+	end if;
+end process accept_device;
+
+calculate_channel_offset:process(accept)
+begin
+	if rising_edge(accept) then
+		for i in 31 downto 24 loop
+			channel_offset(i)<='0';
+		end loop;
+		for i in 15 downto 0 loop
+			channel_offset(i+8)<=deviceID(i);
+		end loop;
+		for i in 7 downto 0 loop
+			channel_offset(i)<='0';
+		end loop;
+	end if;
+end process calculate_channel_offset;
 end Behavioral;

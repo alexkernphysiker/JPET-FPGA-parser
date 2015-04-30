@@ -45,7 +45,8 @@ ARCHITECTURE behavior OF top IS
    signal end_packet : std_logic;
    signal data_bus : std_logic_vector(7 downto 0);
 
-	signal beforefilter,afterfilter:std_logic:='0';
+	signal beforefilter:std_logic:='0';
+	signal afterfilter:std_logic:='0';
 	signal data_word: std_logic_vector(31 downto 0);
 	signal deviceID: std_logic_vector(15 downto 0);
 	signal eventID: std_logic_vector(31 downto 0);
