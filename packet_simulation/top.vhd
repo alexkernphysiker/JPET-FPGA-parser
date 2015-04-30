@@ -33,9 +33,9 @@ ARCHITECTURE behavior OF top IS
 	component tdc_parser port(
 		new_data:in std_logic;
 		dataWORD: in std_logic_vector(31 downto 0);
-		eventID: in std_logic_vector(31 downto 0);
-		triggerID: in std_logic_vector(31 downto 0);
-		channel_offset: in std_logic_vector(31 downto 0)
+		channel_offset: in std_logic_vector(31 downto 0);
+	   eventID: in std_logic_vector(31 downto 0);
+		triggerID: in std_logic_vector(31 downto 0)
 	);end component;
 	
    signal clock : std_logic:='0';
@@ -84,9 +84,9 @@ BEGIN
 	tdc:tdc_parser port map(
 		new_data => afterfilter,
 		dataWORD => data_word,
+		channel_offset => channel_offset,
 		eventID => eventID,
-		triggerID => triggerID,
-		channel_offset => channel_offset
+		triggerID => triggerID
 	);
    clock_process :process
    begin
