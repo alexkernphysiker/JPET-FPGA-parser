@@ -3,14 +3,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity parser is
     Port ( 
-				--- INPUT
 	        clk_read : in  STD_LOGIC;
            reset : in  STD_LOGIC;
            start_packet : in  STD_LOGIC;
            end_packet : in  STD_LOGIC;
            data_valid : in  STD_LOGIC;
 			  data_in : in STD_LOGIC_VECTOR(7 downto 0);
-			  ----DATA OUTPUT
+
 			  eventID: out std_logic_vector(31 downto 0);
 			  triggerID: out std_logic_vector(31 downto 0);
 			  deviceID: out std_logic_vector(15 downto 0);
