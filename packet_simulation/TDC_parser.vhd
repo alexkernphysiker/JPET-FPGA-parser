@@ -5,7 +5,7 @@ entity TDC_parser is
 	port(
 		new_data:in std_logic;
 		dataWORD:in std_logic_vector(31 downto 0);
-		channel_offset:in std_logic_vector(31 downto 0);
+		channel_offset:in std_logic_vector(15 downto 0);
 	   eventID: in std_logic_vector(31 downto 0);
 		triggerID: in std_logic_vector(31 downto 0)
 	);
@@ -16,6 +16,7 @@ signal saved_channel_offset: std_logic_vector(31 downto 0);
 signal saved_eventID: std_logic_vector(31 downto 0);
 signal saved_triggerID: std_logic_vector(31 downto 0);
 signal reset:std_logic:='0';
+signal parse:std_logic:='0';
 type tdc_state is(IDLE,HEADER_READ,EPOCH_READ);
 signal current_tdc_state,next_tdc_state:tdc_state:=IDLE;
 begin

@@ -26,14 +26,15 @@ ARCHITECTURE behavior OF top IS
 	);end component;
 	component devicefilter port(
 		deviceID: in std_logic_vector(15 downto 0);
-		new_data: in std_logic;		
-		channel_offset: out std_logic_vector(31 downto 0);
+		new_data: in std_logic;
+		clock: in std_logic;
+		channel_offset: out std_logic_vector(15 downto 0);
 		accepted: out std_logic
 	);end component;
 	component tdc_parser port(
 		new_data:in std_logic;
 		dataWORD: in std_logic_vector(31 downto 0);
-		channel_offset: in std_logic_vector(31 downto 0);
+		channel_offset: in std_logic_vector(15 downto 0);
 	   eventID: in std_logic_vector(31 downto 0);
 		triggerID: in std_logic_vector(31 downto 0)
 	);end component;
@@ -51,7 +52,7 @@ ARCHITECTURE behavior OF top IS
 	signal deviceID: std_logic_vector(15 downto 0);
 	signal eventID: std_logic_vector(31 downto 0);
 	signal triggerID: std_logic_vector(31 downto 0);
-	signal channel_offset: std_logic_vector(31 downto 0);
+	signal channel_offset: std_logic_vector(15 downto 0);
 
    constant clock_period : time := 10 ns;
 BEGIN 
@@ -77,7 +78,8 @@ BEGIN
 	);
 	filter:devicefilter port map (
 		deviceID => deviceID,
-		new_data => beforefilter,	
+		new_data => beforefilter,
+		clock => clock,
 		channel_offset => channel_offset,
 		accepted => afterfilter
 	);
