@@ -35,12 +35,18 @@ trigger_change_check:process(new_data)begin
 			(not(saved_channel_offset=channel_offset))then
 			reset<='1';
 		end if;
+		parse<='1';
 	elsif falling_edge(new_data) then
 		reset<='0';
+		parse<='0';
 		saved_eventID<=eventID;
 		saved_triggerID<=triggerID;
 		saved_channel_offset<=channel_offset;
 	end if;
 end process trigger_change_check;
-
+state_machine:process(parse)begin
+	if rising_edge(parse)then
+		
+	end if;
+end process state_machine;
 end Behavioral;
