@@ -12,7 +12,7 @@ entity TDC_parser is
 end TDC_parser;
 
 architecture Behavioral of TDC_parser is
-signal saved_channel_offset: std_logic_vector(31 downto 0);
+signal saved_channel_offset: std_logic_vector(15 downto 0);
 signal saved_eventID: std_logic_vector(31 downto 0);
 signal saved_triggerID: std_logic_vector(31 downto 0);
 signal reset:std_logic:='0';
@@ -36,20 +36,35 @@ trigger_change_check:process(new_data)begin
 			reset<='1';
 		end if;
 		parse<='1';
-	elsif falling_edge(new_data) then
-		reset<='0';
-		parse<='0';
-		saved_eventID<=eventID;
-		saved_triggerID<=triggerID;
-		saved_channel_offset<=channel_offset;
+	else 
+		if(reset='1')and(current_tdc_state=IDLE)then
+			reset<='0';
+			saved_eventID<=eventID;
+			saved_triggerID<=triggerID;
+			saved_channel_offset<=channel_offset;
+		end if;
+		if falling_edge(new_data) then
+			parse<='0';
+		end if;
 	end if;
 end process trigger_change_check;
 state_machine:process(parse)begin
 	if rising_edge(parse)then
 		case current_tdc_state is
 		when IDLE => 
-		when HEADER_READ =>
-		when EPOCH_READ =>
+			if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
+				next_tdc_state<=HEADER_READ;
+			end if;
+		when HEADER_READ => 
+			if(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
+				next_tdc_state<=EPOCH_READ;
+			end if;
+		when EPOCH_READ => 
+			if(dataWORD(31)='1')then
+				next_tdc_state<=EPOCH_READ;
+			elsif(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
+				next_tdc_state<=HEADER_READ;
+			end if;
 		end case;
 	end if;
 end process state_machine;
