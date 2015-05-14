@@ -18,22 +18,22 @@ iseconfig
 bin
 build-*
 *_app*
-qt_build.pri
 output*.txt
 *.output.txt
 *_output.txt
-data.sorting.*
-.plotscript.gp
 *.png
 *.autosave
-*_app*
+savedump
 
 #kdevelop
 *swp
 *~
 ~*
 *.kdev*
-
+#cmake
+CMake*
+*.cmake
+Makefile
 # Compiled Object files
 *.slo
 *.lo
@@ -52,16 +52,6 @@ data.sorting.*
 # for windows
 *.dll
 *.exe
-
-#qt creator
-qrc_*.cpp
-moc_*.cpp
-ui_*.h
-Makefile
-Makefile*.*
-*.pro.user
-*.pro.user.*
-object_script*
 
 #tex
 *.dvi
