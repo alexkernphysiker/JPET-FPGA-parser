@@ -38,7 +38,7 @@ accept_device:process(accept)
 begin
 	if rising_edge(accept)then
 		accepted<='1';
-	elsif falling_edge(accept) then
+	elsif accept='0' then
 		accepted<='0';
 	end if;
 end process accept_device;

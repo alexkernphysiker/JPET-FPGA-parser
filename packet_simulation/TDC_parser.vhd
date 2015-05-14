@@ -21,35 +21,33 @@ type tdc_state is(IDLE,HEADER_READ,EPOCH_READ);
 signal current_tdc_state,next_tdc_state:tdc_state:=IDLE;
 begin
 state_change:process(reset,new_data)begin
-	if reset='1' then
+	if rising_edge(reset)then
 		current_tdc_state<=IDLE;
 	elsif falling_edge(new_data)then
 		current_tdc_state<=next_tdc_state;
 	end if;
 end process state_change;
 trigger_change_check:process(new_data)begin
+	if(not(saved_eventID=eventID))or
+		(not(saved_triggerID=triggerID))or
+		(not(saved_channel_offset=channel_offset))then
+		reset<='1';
+	end if;
+	if(reset='1')and(current_tdc_state=IDLE)then
+		saved_eventID<=eventID;
+		saved_triggerID<=triggerID;
+		saved_channel_offset<=channel_offset;
+		reset<='0';
+	end if;
 	if rising_edge(new_data) then
-		if
-			(not(saved_eventID=eventID))or
-			(not(saved_triggerID=triggerID))or
-			(not(saved_channel_offset=channel_offset))then
-			reset<='1';
-		end if;
 		parse<='1';
-	else 
-		if(reset='1')and(current_tdc_state=IDLE)then
-			reset<='0';
-			saved_eventID<=eventID;
-			saved_triggerID<=triggerID;
-			saved_channel_offset<=channel_offset;
-		end if;
-		if falling_edge(new_data) then
-			parse<='0';
-		end if;
+	end if;
+	if falling_edge(new_data) then
+		parse<='0';
 	end if;
 end process trigger_change_check;
 state_machine:process(parse)begin
-	if rising_edge(parse)then
+	if rising_edge(parse) then
 		case current_tdc_state is
 		when IDLE => 
 			if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
@@ -60,12 +58,17 @@ state_machine:process(parse)begin
 				next_tdc_state<=EPOCH_READ;
 			end if;
 		when EPOCH_READ => 
-			if(dataWORD(31)='1')then
-				next_tdc_state<=EPOCH_READ;
-			elsif(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
+			if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
 				next_tdc_state<=HEADER_READ;
 			end if;
 		end case;
+		if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
+		--TODO: decode TDC header data word
+		elsif(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
+		--TODO: decode epoch data word
+		elsif(dataWORD(31)='1')and(current_tdc_state=EPOCH_READ)then
+		--ToDo: decode finetime data word
+		end if;
 	end if;
 end process state_machine;
 end Behavioral;
