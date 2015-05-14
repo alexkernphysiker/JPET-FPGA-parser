@@ -46,7 +46,11 @@ trigger_change_check:process(new_data)begin
 end process trigger_change_check;
 state_machine:process(parse)begin
 	if rising_edge(parse)then
-		
+		case current_tdc_state is
+		when IDLE => 
+		when HEADER_READ =>
+		when EPOCH_READ =>
+		end case;
 	end if;
 end process state_machine;
 end Behavioral;
