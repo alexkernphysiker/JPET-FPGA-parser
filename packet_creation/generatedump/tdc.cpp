@@ -16,7 +16,7 @@ namespace DumpGenerate {
 		for(auto channel:pluged_channels)
 			if(channel->ID()==channel_id)
 				return channel;
-			throw;
+		throw;
 	}
 	
 	shared_ptr< DataItem > TDC::getEvent(){
