@@ -1,3 +1,4 @@
+#include <exception>
 #include "tdc.h"
 using namespace std;
 namespace DumpGenerate {
@@ -7,7 +8,7 @@ namespace DumpGenerate {
 	TDC& TDC::operator<<(shared_ptr< TDCChannel > channel){
 		for(auto ch:pluged_channels)
 			if(channel->ID()==ch->ID())
-				throw;
+				throw exception();
 			pluged_channels.push_back(channel);
 		return *this;
 	}
@@ -16,7 +17,7 @@ namespace DumpGenerate {
 		for(auto channel:pluged_channels)
 			if(channel->ID()==channel_id)
 				return channel;
-		throw;
+		throw exception();
 	}
 	
 	shared_ptr< DataItem > TDC::getEvent(){
@@ -49,13 +50,7 @@ namespace DumpGenerate {
 		finetime=source.finetime;
 	}
 	TDCTime::TDCTime(numtype e, numtype c, numtype f, bool r){
-		if(e>bits_in<27,0>::set)throw;
-		if(c>bits_in<10,0>::set)throw;
-		if(f>bits_in<9,0>::set)throw;
-		epoch=e;
-		coasser=c;
-		finetime=f;
-		risingedge=r;
+		epoch=e;coasser=c;finetime=f;risingedge=r;
 	}
 	numtype TDCTime::Coasser(){return coasser;}
 	numtype TDCTime::Epoch(){return epoch;}

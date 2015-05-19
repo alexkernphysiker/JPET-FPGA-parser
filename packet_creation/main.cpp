@@ -24,9 +24,10 @@ int main(int arg_cnt,char**arg) {
 		for(numtype i=1;i<=3;i++)(*tdc2)[i]<<timeconst;
 		wrap<<alldetectors.getEvent(0x1d1d00);
 		wrap<<alldetectors.getEvent(0x1d1d01);
-		for(numtype i=1;i<=3;i++)(*tdc2)[i]<<timeconst;
+		TDCTime timeconst1(0x77,0x77,0x77,true);
+		for(numtype i=1;i<=3;i++)(*tdc2)[i]<<timeconst1;
 		wrap<<alldetectors.getEvent(0x1d1d02);
-		for(numtype i=1;i<=5;i++)(*tdc1)[i]<<timeconst;
+		for(numtype i=1;i<=5;i++)(*tdc1)[i]<<timeconst1;
 		wrap<<alldetectors.getEvent(0x1d1d03);
 		output.close();
 		printf("File saved.\n");
