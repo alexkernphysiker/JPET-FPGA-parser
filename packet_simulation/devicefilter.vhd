@@ -5,7 +5,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity devicefilter is
 	port(
 		deviceID: in std_logic_vector(15 downto 0);
-		new_data: in std_logic;
+		in_data: in std_logic;
 		clock: in std_logic;
 		
 		channel_offset: out std_logic_vector(15 downto 0);
@@ -18,9 +18,9 @@ signal accept:std_logic:='0';
 signal counter:integer:=0;
 begin
 
-check_device:process(new_data,clock)
+check_device:process(in_data,clock)
 begin
-	if rising_edge(new_data) then
+	if rising_edge(in_data) then
 		counter<=4;
 	elsif rising_edge(clock)then
 		if counter>0 then

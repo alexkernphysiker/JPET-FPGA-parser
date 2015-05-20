@@ -14,7 +14,7 @@ entity parser is
 			  triggerID: out std_logic_vector(31 downto 0);
 			  deviceID: out std_logic_vector(15 downto 0);
 			  dataWORD: out std_logic_vector(31 downto 0);
-			  new_data: out std_logic
+			  out_data: out std_logic
 			);
 end parser;
 architecture Behavioral of parser is
@@ -214,7 +214,7 @@ begin
 			end loop;
 			if (dataitem_cnt mod 4)=3 then
 				dataWORD<=current_word;
-				new_data<='1';
+				out_data<='1';
 			end if;
 			if dataitem_cnt>=((data_words_number+1)*4)-1 then
 				next_item_state<=IDLE;
@@ -222,7 +222,7 @@ begin
 		end case;
 	else 
 		if falling_edge(isreading)then
-			new_data<='0';
+			out_data<='0';
 		end if;
 		if not(current_subqueue_state=SUBQUEUE) then
 			next_item_state<=IDLE;

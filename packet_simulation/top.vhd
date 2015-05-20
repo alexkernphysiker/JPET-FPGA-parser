@@ -22,21 +22,27 @@ ARCHITECTURE behavior OF top IS
 		triggerID: out std_logic_vector(31 downto 0);
 		deviceID: out std_logic_vector(15 downto 0);
 		dataWORD: out std_logic_vector(31 downto 0);
-		new_data: out std_logic
+		out_data: out std_logic
 	);end component;
 	component devicefilter port(
 		deviceID: in std_logic_vector(15 downto 0);
-		new_data: in std_logic;
+		in_data: in std_logic;
 		clock: in std_logic;
 		channel_offset: out std_logic_vector(15 downto 0);
 		accepted: out std_logic
 	);end component;
 	component tdc_parser port(
-		new_data:in std_logic;
+		in_data:in std_logic;
 		dataWORD: in std_logic_vector(31 downto 0);
 		channel_offset: in std_logic_vector(15 downto 0);
 	   eventID: in std_logic_vector(31 downto 0);
-		triggerID: in std_logic_vector(31 downto 0)
+		triggerID: in std_logic_vector(31 downto 0);
+		out_data: out std_logic;
+		time_isrising:out std_logic;
+		time_channel: out std_logic_vector(15 downto 0);
+		time_epoch: out std_logic_vector(27 downto 0);
+		time_fine: out std_logic_vector(9 downto 0);
+		time_coasser:out std_logic_vector(10 downto 0)
 	);end component;
 	
    signal clock : std_logic:='0';
@@ -53,6 +59,13 @@ ARCHITECTURE behavior OF top IS
 	signal eventID: std_logic_vector(31 downto 0);
 	signal triggerID: std_logic_vector(31 downto 0);
 	signal channel_offset: std_logic_vector(15 downto 0);
+	
+	signal tdc_data: std_logic;
+	signal time_channel: std_logic_vector(15 downto 0);
+	signal time_isrising: std_logic;
+	signal time_epoch: std_logic_vector(27 downto 0);
+	signal time_fine: std_logic_vector(9 downto 0);
+	signal time_coasser: std_logic_vector(10 downto 0);
 
    constant clock_period : time := 10 ns;
 BEGIN 
@@ -74,21 +87,28 @@ BEGIN
 		triggerID => triggerID,
 		deviceID => deviceID,
 		dataWORD => data_word,
-		new_data => beforefilter
+		out_data => beforefilter
 	);
 	filter:devicefilter port map (
 		deviceID => deviceID,
-		new_data => beforefilter,
+		in_data => beforefilter,
 		clock => clock,
 		channel_offset => channel_offset,
 		accepted => afterfilter
 	);
 	tdc:tdc_parser port map(
-		new_data => afterfilter,
+		in_data => afterfilter,
 		dataWORD => data_word,
 		channel_offset => channel_offset,
 		eventID => eventID,
-		triggerID => triggerID
+		triggerID => triggerID,
+		
+		out_data => tdc_data,
+		time_isrising => time_isrising,
+		time_channel => time_channel,
+		time_epoch => time_epoch,
+		time_fine => time_fine,
+		time_coasser => time_coasser
 	);
    clock_process :process
    begin
