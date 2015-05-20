@@ -58,23 +58,38 @@ state_machine:process(parse)begin
 		when IDLE => 
 			if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
 				next_tdc_state<=HEADER_READ;
+				for i in 15 downto 0 loop
+					if dataWORD(i)='1' then
+						next_tdc_state<=IDLE;
+					end if;
+				end loop;
 			end if;
 		when HEADER_READ => 
 			if(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
+				for i in 27 downto 0 loop
+					time_epoch(i)<=dataWORD(i);
+				end loop;
 				next_tdc_state<=EPOCH_READ;
 			end if;
 		when EPOCH_READ => 
-			if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
-				next_tdc_state<=HEADER_READ;
+			if(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
+				for i in 27 downto 0 loop
+					time_epoch(i)<=dataWORD(i);
+				end loop;
+			elsif dataWORD(31)='1' then
+				for i in 9 downto 0 loop
+					time_fine(i)<=dataWORD(i+12);
+				end loop;
+				for i in 10 downto 0 loop
+					time_coasser(i)<=dataWORD(i);
+				end loop;
+				time_isrising<=dataWORD(11);
+				--ToDo calculate channel
+				out_data<='1';
 			end if;
 		end case;
-		if(dataWORD(31)='0')and(dataWORD(30)='0')and(dataWORD(29)='1')then
-		--TODO: decode TDC header data word
-		elsif(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
-		--TODO: decode epoch data word
-		elsif(dataWORD(31)='1')and(current_tdc_state=EPOCH_READ)then
-		--ToDo: decode finetime data word
-		end if;
+	elsif falling_edge(parse) then
+		out_data<='0';
 	end if;
 end process state_machine;
 end Behavioral;
