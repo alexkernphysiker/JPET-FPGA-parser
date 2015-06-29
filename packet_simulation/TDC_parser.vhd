@@ -23,6 +23,7 @@ signal saved_eventID: std_logic_vector(31 downto 0);
 signal saved_triggerID: std_logic_vector(31 downto 0);
 signal reset:std_logic:='0';
 signal parse:std_logic:='0';
+signal offset:integer:=0;
 type tdc_state is(IDLE,HEADER_READ,EPOCH_READ);
 signal current_tdc_state,next_tdc_state:tdc_state:=IDLE;
 begin
@@ -52,7 +53,9 @@ trigger_change_check:process(in_data)begin
 		parse<='0';
 	end if;
 end process trigger_change_check;
-state_machine:process(parse)begin
+state_machine:process(parse)
+variable channel:integer:=0;
+begin
 	if rising_edge(parse) then
 		case current_tdc_state is
 		when IDLE => 
@@ -63,20 +66,20 @@ state_machine:process(parse)begin
 						next_tdc_state<=IDLE;
 					end if;
 				end loop;
+				offset<=0;
+				for i in 15 downto 0 loop
+					offset<=offset*2;
+					if channel_offset(i)='1' then
+						offset<=offset+1;
+					end if;
+				end loop;
 			end if;
 		when HEADER_READ => 
 			if(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
-				for i in 27 downto 0 loop
-					time_epoch(i)<=dataWORD(i);
-				end loop;
 				next_tdc_state<=EPOCH_READ;
 			end if;
 		when EPOCH_READ => 
-			if(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
-				for i in 27 downto 0 loop
-					time_epoch(i)<=dataWORD(i);
-				end loop;
-			elsif dataWORD(31)='1' then
+			if dataWORD(31)='1' then
 				for i in 9 downto 0 loop
 					time_fine(i)<=dataWORD(i+12);
 				end loop;
@@ -84,10 +87,30 @@ state_machine:process(parse)begin
 					time_coasser(i)<=dataWORD(i);
 				end loop;
 				time_isrising<=dataWORD(11);
-				--ToDo calculate channel
+				channel:=0;
+				for i in 6 downto 0 loop
+					channel:=channel*2;
+					if dataWORD(i+22)='1'then
+						channel:=channel+1;
+					end if;
+				end loop;
+				channel:=channel+offset;
+				for i in 0 to 15 loop
+					if channel mod 2 = 1 then
+						time_channel(i)<='1';
+					else
+						time_channel(i)<='0';
+					end if;
+					channel:=channel/2;
+				end loop;
 				out_data<='1';
 			end if;
 		end case;
+		if(dataWORD(31)='0')and(dataWORD(30)='1')and(dataWORD(29)='1')then
+			for i in 27 downto 0 loop
+				time_epoch(i)<=dataWORD(i);
+			end loop;
+		end if;
 	elsif falling_edge(parse) then
 		out_data<='0';
 	end if;
