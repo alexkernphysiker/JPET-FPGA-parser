@@ -1,24 +1,5 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 04.05.2015 14:08:42
--- Design Name: 
--- Module Name: vector_func - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
+-- This source file was created for J-PET project in WFAIS (Jagiellonian University in Cracow)
+-- License for distribution outside WFAIS UJ and J-PET project is GPL v 3
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
