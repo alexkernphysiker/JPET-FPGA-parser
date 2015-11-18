@@ -40,9 +40,12 @@ accept_device:process(accept)
 begin
 	if rising_edge(accept)then
 		accepted<='1';
-	elsif accept='0' then
+    end if;
+	if falling_edge(accept) then
 		accepted<='0';
 	end if;
+	
+	-- if rising edge(clk) then accept <= accepted; ?
 end process accept_device;
 
 calculate_channel_offset:process(accept)

@@ -69,11 +69,10 @@ begin
 		else
 			isreading<='0';
 		end if;
-	else
-		if rising_edge(clk_read) then
-			isreading<='0';
-		end if;
 	end if;
+    if rising_edge(clk_read) then
+        isreading<='0';
+    end if;
 end process data_state_proc;
 parcer_queue:process(isreading)
 variable queue_cnt,queue_size:integer:=0;
@@ -121,7 +120,7 @@ parcer_subqueue:process(isreading)
 variable subqueue_cnt,subqueue_size:integer:=0;
 variable event_id,trigger_id:std_logic_vector(31 downto 0);
 begin
-	if(rising_edge(isreading))and(current_parcer_state=QUEUE_BODY)then
+	if(rising_edge(isreading)) and (current_parcer_state=QUEUE_BODY)then
 		if not(current_subqueue_state=IDLE)then
 			subqueue_cnt:=subqueue_cnt+1;
 		end if;
@@ -169,16 +168,17 @@ begin
 				subqueue_cnt:=0;
 			end if;
 		end case;
-	elsif not(current_parcer_state=QUEUE_BODY) then
-		next_subqueue_state<=IDLE;
 	end if;
+    if not(current_parcer_state=QUEUE_BODY) then
+        next_subqueue_state<=IDLE;
+    end if;
 end process parcer_subqueue;
 parce_dataitems: process(isreading)
 variable dataitem_cnt,data_words_number:integer:=0;
 variable device_id:std_logic_vector(15 downto 0);
 variable current_word:std_logic_vector(31 downto 0);
 begin
-	if(rising_edge(isreading))and (current_subqueue_state=SUBQUEUE)then
+	if rising_edge(isreading) and (current_subqueue_state=SUBQUEUE)then
 		if not(current_item_state=IDLE)then
 			dataitem_cnt:=dataitem_cnt+1;
 		end if;
@@ -222,13 +222,12 @@ begin
 				next_item_state<=IDLE;
 			end if;
 		end case;
-	else 
-		if falling_edge(isreading)then
-			out_data<='0';
-		end if;
-		if not(current_subqueue_state=SUBQUEUE) then
-			next_item_state<=IDLE;
-		end if;
-	end if;
+    end if;
+    if falling_edge(isreading)then
+        out_data<='0';
+    end if;
+    if not(current_subqueue_state=SUBQUEUE) then
+        next_item_state<=IDLE;
+    end if;
 end process parce_dataitems;
 end Behavioral;
