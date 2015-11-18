@@ -32,10 +32,13 @@ variable data_v: std_logic := '0';
 variable start_p: std_logic := '0';
 variable end_p: std_logic := '0';
 begin
-if rising_edge(clock)then
+if falling_edge(clock)then
 	if(wait_cnt>0)then
 		wait_cnt:=wait_cnt-1;
 		end_p:='0';
+		if(wait_cnt=0)then
+			start_p:='1';
+		end if;
 	else
 		hread(L,N,goodnumber);
 		if not goodnumber then
@@ -79,7 +82,7 @@ if rising_edge(clock)then
 		else
 			if not inside then
 				inside:=true;
-				start_p:='1';
+				start_p:='0';
 				end_p:='0';
 			else
 				end_p:='0';
