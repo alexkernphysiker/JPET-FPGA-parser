@@ -16,42 +16,39 @@ entity devicefilter is
 end devicefilter;
 
 architecture Behavioral of devicefilter is
-signal accept:std_logic:='0';
-signal counter:integer:=0;
+    signal accept : std_logic:='0';
+    signal counter : integer:=0;
 begin
 
-check_device:process(in_data,clock)
+check_device:process(in_data, clock)
 begin
-	if rising_edge(in_data) then
-		counter<=4;
-	elsif rising_edge(clock)then
-		if counter>0 then
-			counter<=counter-1;
-			if counter=1 then
-				accept<='1';
-			end if;
-		end if;
-	elsif falling_edge(clock) then
-		accept<='0';
-	end if;
+    if rising_edge(clock) then
+        if in_data = '1' then
+            counter <= 4;
+        elsif accept = '1' then
+            accept <= '0';
+        elsif counter > 0 then
+            counter <= counter-1;
+            if counter = 0 then
+                accept <= '1';
+            end if;
+        end if;
+    end if;
 end process check_device;
 
-accept_device:process(accept)
+accept_device:process(accept, clock)
 begin
-	if rising_edge(accept)then
-		accepted<='1';
+	if rising_edge(clock)then
+        accepted<=accept;
     end if;
-	if falling_edge(accept) then
-		accepted<='0';
-	end if;
-	
-	-- if rising edge(clk) then accept <= accepted; ?
 end process accept_device;
 
-calculate_channel_offset:process(accept)
+calculate_channel_offset:process(accept, clock)
 begin
-	if rising_edge(accept) then
-		channel_offset<=deviceID;
+	if rising_edge(clock) then
+	    if accept='1' then
+            channel_offset<=deviceID;
+        end if;
 	end if;
 end process calculate_channel_offset;
 end Behavioral;
