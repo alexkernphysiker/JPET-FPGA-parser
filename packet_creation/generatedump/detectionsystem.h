@@ -19,7 +19,7 @@ namespace DumpGenerate{
 		numtype trigger;
 		vector<shared_ptr<IDetector>> elements;
 	};
-	#include "math_h/bit_opr.cc"
+	#include <bit_opr.cc>
 	class IDetector{
 		friend class DetectionSystem;
 	public:
